@@ -1,0 +1,111 @@
+.tictactoe-game {
+  width: 100%;
+  max-width: 450px;
+  margin: 0 auto;
+}
+
+.tictactoe-stats {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding: 16px;
+  background: rgba(var(--primary-rgb), 0.05);
+  border-radius: 12px;
+  border: 2px solid rgba(var(--primary-rgb), 0.1);
+}
+
+.player-indicator {
+  font-weight: 700;
+  color: var(--primary);
+  font-size: 1.1rem;
+}
+
+.winner-message {
+  padding: 20px;
+  background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+  color: white;
+  border-radius: 12px;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 24px;
+  animation: winnerAppear 0.5s ease-out;
+}
+
+@keyframes winnerAppear {
+  0% { transform: scale(0.5); opacity: 0; }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.tictactoe-board {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin: 0 auto;
+  max-width: 400px;
+}
+
+.tictactoe-cell {
+  aspect-ratio: 1;
+  background: white;
+  border: 3px solid rgba(var(--primary-rgb), 0.2);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.tictactoe-cell:not(.filled):hover {
+  background: rgba(var(--primary-rgb), 0.05);
+  border-color: var(--primary);
+  transform: scale(1.05);
+}
+
+.tictactoe-cell.filled {
+  cursor: not-allowed;
+}
+
+.player-x {
+  color: var(--primary);
+  font-weight: 700;
+  animation: markAppear 0.3s ease-out;
+}
+
+.player-o {
+  color: var(--primary-dark);
+  font-weight: 700;
+  animation: markAppear 0.3s ease-out;
+}
+
+@keyframes markAppear {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.winning-cell {
+  background: rgba(var(--primary-rgb), 0.2);
+  border-color: var(--primary);
+  animation: winningGlow 0.6s ease-in-out infinite;
+}
+
+@keyframes winningGlow {
+  0%, 100% { box-shadow: 0 0 10px rgba(var(--primary-rgb), 0.3); }
+  50% { box-shadow: 0 0 20px rgba(var(--primary-rgb), 0.6); }
+}
+
+@media (max-width: 500px) {
+  .tictactoe-board {
+    max-width: 300px;
+  }
+
+  .tictactoe-cell {
+    font-size: 3rem;
+  }
+}

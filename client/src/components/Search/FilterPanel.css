@@ -8,23 +8,23 @@
   gap: 8px;
   padding: 10px 16px;
   background: white;
-  border: 2px solid rgba(233, 30, 99, 0.2);
+  border: 2px solid rgba(var(--primary-rgb), 0.2);
   border-radius: 10px;
   font-size: 0.95rem;
   font-weight: 600;
   color: #333;
   cursor: pointer;
   transition: all 0.2s;
-  box-shadow: 0 2px 8px rgba(233, 30, 99, 0.1);
+  box-shadow: 0 2px 8px rgba(var(--primary-rgb), 0.1);
 }
 
 .filter-toggle:hover {
-  border-color: #E91E63;
-  box-shadow: 0 4px 12px rgba(233, 30, 99, 0.15);
+  border-color: var(--primary);
+  box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.15);
 }
 
 .filter-badge {
-  background: #E91E63;
+  background: var(--primary);
   color: white;
   padding: 2px 8px;
   border-radius: 12px;
@@ -38,10 +38,10 @@
   right: 0;
   min-width: 320px;
   background: white;
-  border: 2px solid rgba(233, 30, 99, 0.2);
+  border: 2px solid rgba(var(--primary-rgb), 0.2);
   border-radius: 12px;
   padding: 16px;
-  box-shadow: 0 8px 24px rgba(233, 30, 99, 0.2);
+  box-shadow: 0 8px 24px rgba(var(--primary-rgb), 0.2);
   z-index: 100;
   animation: slideDown 0.2s ease;
 }
@@ -60,7 +60,7 @@
 .filter-section {
   margin-bottom: 16px;
   padding-bottom: 16px;
-  border-bottom: 1px solid rgba(233, 30, 99, 0.2);
+  border-bottom: 1px solid rgba(var(--primary-rgb), 0.2);
 }
 
 .filter-section:last-of-type {
@@ -72,7 +72,7 @@
 .filter-section h4 {
   font-size: 0.85rem;
   font-weight: 700;
-  color: #E91E63;
+  color: var(--primary);
   margin-bottom: 12px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -87,7 +87,7 @@
 .filter-date-inputs input {
   flex: 1;
   padding: 8px 12px;
-  border: 2px solid rgba(233, 30, 99, 0.2);
+  border: 2px solid rgba(var(--primary-rgb), 0.2);
   border-radius: 8px;
   font-size: 0.9rem;
   background: white;
@@ -96,8 +96,8 @@
 
 .filter-date-inputs input:focus {
   outline: none;
-  border-color: #E91E63;
-  box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.1);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.1);
 }
 
 .filter-date-inputs span {
@@ -113,7 +113,7 @@
 
 .filter-tag {
   padding: 6px 12px;
-  border: 2px solid rgba(233, 30, 99, 0.2);
+  border: 2px solid rgba(var(--primary-rgb), 0.2);
   border-radius: 8px;
   background: white;
   color: #666;
@@ -124,13 +124,13 @@
 }
 
 .filter-tag:hover {
-  border-color: #E91E63;
-  background: rgba(233, 30, 99, 0.05);
+  border-color: var(--primary);
+  background: rgba(var(--primary-rgb), 0.05);
 }
 
 .filter-tag.active {
-  background: #E91E63;
-  border-color: #E91E63;
+  background: var(--primary);
+  border-color: var(--primary);
   color: white;
 }
 
@@ -145,7 +145,7 @@
   width: 18px;
   height: 18px;
   cursor: pointer;
-  accent-color: #E91E63;
+  accent-color: var(--primary);
 }
 
 .filter-checkbox span {
@@ -156,7 +156,7 @@
 .filter-clear {
   width: 100%;
   padding: 10px;
-  background: #C2185B;
+  background: var(--primary-dark);
   color: white;
   border: none;
   border-radius: 8px;
@@ -179,3 +179,4 @@
     min-width: 280px;
   }
 }
+

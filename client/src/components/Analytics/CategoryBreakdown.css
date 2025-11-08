@@ -2,15 +2,15 @@
   background: white;
   padding: 20px;
   border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(233, 30, 99, 0.15),
-              0 0 0 2px rgba(233, 30, 99, 0.1);
-  border: 2px solid rgba(233, 30, 99, 0.2);
+  box-shadow: 0 4px 20px rgba(var(--primary-rgb), 0.15),
+              0 0 0 2px rgba(var(--primary-rgb), 0.1);
+  border: 2px solid rgba(var(--primary-rgb), 0.2);
   margin-bottom: 20px;
 }
 
 .category-container h3 {
   margin: 0 0 20px 0;
-  color: #E91E63;
+  color: var(--primary);
   font-size: 18px;
   font-weight: 700;
 }
@@ -21,4 +21,5 @@
   padding: 40px;
   font-style: italic;
 }
+
 

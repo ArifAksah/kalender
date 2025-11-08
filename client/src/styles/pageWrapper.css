@@ -1,7 +1,7 @@
 /* Common page wrapper for all pages with navbar */
 .page-wrapper {
   min-height: 100vh;
-  background: #E91E63;
+  background: var(--primary);
   display: flex;
   flex-direction: column;
   position: relative;
@@ -51,4 +51,5 @@
     margin-top: 110px; /* More space for mobile navbar */
   }
 }
+
 

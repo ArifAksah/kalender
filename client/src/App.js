@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -13,13 +14,15 @@ import Analytics from './pages/Analytics';
 import Achievements from './pages/Achievements';
 import Settings from './pages/Settings';
 import TodoList from './pages/TodoList';
+import Games from './pages/Games';
 import InstallPrompt from './components/PWA/InstallPrompt';
 import './App.css';
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
+    <ThemeProvider>
+      <AuthProvider>
+        <Router>
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
@@ -67,6 +70,14 @@ function App() {
             } 
           />
           <Route 
+            path="/games" 
+            element={
+              <ProtectedRoute>
+                <Games />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
             path="/" 
             element={
               <ProtectedRoute>
@@ -79,6 +90,7 @@ function App() {
         <InstallPrompt />
       </Router>
     </AuthProvider>
+    </ThemeProvider>
   );
 }
 

@@ -1,0 +1,26 @@
+/* 
+  This file helps convert existing hardcoded colors to CSS variables
+  Import this in all component CSS files that need theme support
+*/
+
+/* Replace all instances of these colors with variables:
+   var(--primary-light) -> var(--primary-light)
+   var(--primary) -> var(--primary)
+   var(--primary-dark) -> var(--primary-dark)
+   linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%) -> linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%)
+   rgba(var(--primary-rgb), ...) -> rgba from var(--primary) with alpha
+*/
+
+/* Helper: Convert rgba with primary color */
+:root[data-theme="pink"] {
+  --primary-rgb: 233, 30, 99;
+}
+
+:root[data-theme="sky"] {
+  --primary-rgb: 41, 182, 246;
+}
+
+:root {
+  --primary-rgb: 233, 30, 99;
+}
+

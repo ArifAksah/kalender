@@ -217,9 +217,9 @@ function TodoList() {
   };
 
   const columns = [
-    { id: 'upcoming', title: '📋 Upcoming', color: '#FF6B9D' },
-    { id: 'ongoing', title: '⚡ Ongoing', color: '#E91E63' },
-    { id: 'completed', title: '✅ Completed', color: '#C2185B' }
+    { id: 'upcoming', title: '📋 Upcoming', color: 'var(--primary-light)' },
+    { id: 'ongoing', title: '⚡ Ongoing', color: 'var(--primary)' },
+    { id: 'completed', title: '✅ Completed', color: 'var(--primary-dark)' }
   ];
 
   return (

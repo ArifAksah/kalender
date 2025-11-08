@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ThemeContext';
 import { getProfile } from '../../services/api';
 import exmineLogo from '../../assets/exmine-logo.png';
 import './Navbar.css';
 
 function Navbar() {
   const { user, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const [profilePhoto, setProfilePhoto] = useState(null);
 
@@ -139,6 +141,20 @@ function Navbar() {
             title="Achievements"
           >
             Achievements
+          </button>
+          <button 
+            onClick={() => navigate('/games')} 
+            className="navbar-icon-button"
+            title="Mini Games"
+          >
+            Games
+          </button>
+          <button 
+            onClick={toggleTheme} 
+            className="theme-toggle"
+            title={`Switch to ${theme === 'pink' ? 'Sky Blue' : 'Pink'} theme`}
+          >
+            {theme === 'pink' ? '🌤️' : '💗'}
           </button>
           <div 
             className="user-info" 

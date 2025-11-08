@@ -20,6 +20,7 @@ const Footer = () => {
               <li><a href="/todo">Todo List</a></li>
               <li><a href="/analytics">Analytics</a></li>
               <li><a href="/achievements">Achievements</a></li>
+              <li><a href="/games">Mini Games</a></li>
             </ul>
           </div>
           

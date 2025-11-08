@@ -1,3 +1,32 @@
+/* Theme Variables */
+:root[data-theme="pink"] {
+  --primary-light: #FF6B9D;
+  --primary: #E91E63;
+  --primary-dark: #C2185B;
+  --gradient-start: #FF6B9D;
+  --gradient-end: #E91E63;
+  --primary-rgb: 233, 30, 99;
+}
+
+:root[data-theme="sky"] {
+  --primary-light: #4FC3F7;
+  --primary: #29B6F6;
+  --primary-dark: #0288D1;
+  --gradient-start: #4FC3F7;
+  --gradient-end: #29B6F6;
+  --primary-rgb: 41, 182, 246;
+}
+
+/* Default theme (pink) */
+:root {
+  --primary-light: #FF6B9D;
+  --primary: #E91E63;
+  --primary-dark: #C2185B;
+  --gradient-start: #FF6B9D;
+  --gradient-end: #E91E63;
+  --primary-rgb: 233, 30, 99;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -15,3 +44,4 @@ body {
 #root {
   min-height: 100vh;
 }
+

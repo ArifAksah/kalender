@@ -2,9 +2,9 @@
   background: white;
   padding: 20px;
   border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(233, 30, 99, 0.15),
-              0 0 0 2px rgba(233, 30, 99, 0.1);
-  border: 2px solid rgba(233, 30, 99, 0.2);
+  box-shadow: 0 4px 20px rgba(var(--primary-rgb), 0.15),
+              0 0 0 2px rgba(var(--primary-rgb), 0.1);
+  border: 2px solid rgba(var(--primary-rgb), 0.2);
   margin-bottom: 20px;
 }
 
@@ -17,7 +17,7 @@
 
 .badge-collection h3 {
   margin: 0 0 20px 0;
-  color: #E91E63;
+  color: var(--primary);
   font-size: 18px;
   font-weight: 700;
 }
@@ -32,34 +32,34 @@
   text-align: center;
   padding: 15px;
   border-radius: 12px;
-  border: 2px solid rgba(233, 30, 99, 0.2);
+  border: 2px solid rgba(var(--primary-rgb), 0.2);
   background: white;
   transition: transform 0.2s, box-shadow 0.2s;
-  box-shadow: 0 2px 8px rgba(233, 30, 99, 0.1);
+  box-shadow: 0 2px 8px rgba(var(--primary-rgb), 0.1);
 }
 
 .badge-item:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(233, 30, 99, 0.2);
-  border-color: #E91E63;
+  box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.2);
+  border-color: var(--primary);
 }
 
 .badge-common {
-  border-color: rgba(233, 30, 99, 0.3);
+  border-color: rgba(var(--primary-rgb), 0.3);
 }
 
 .badge-uncommon {
-  border-color: rgba(233, 30, 99, 0.5);
+  border-color: rgba(var(--primary-rgb), 0.5);
 }
 
 .badge-rare {
-  border-color: #E91E63;
+  border-color: var(--primary);
 }
 
 .badge-legendary {
-  border-color: #E91E63;
-  background: linear-gradient(135deg, rgba(255, 107, 157, 0.2) 0%, rgba(233, 30, 99, 0.1) 100%);
-  box-shadow: 0 4px 12px rgba(233, 30, 99, 0.3);
+  border-color: var(--primary);
+  background: linear-gradient(135deg, rgba(255, 107, 157, 0.2) 0%, rgba(var(--primary-rgb), 0.1) 100%);
+  box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.3);
 }
 
 .badge-icon {
@@ -78,4 +78,5 @@
   font-size: 12px;
   color: #666;
 }
+
 

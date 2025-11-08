@@ -7,17 +7,17 @@
 }
 
 .fc .fc-button-primary {
-  background-color: #E91E63;
-  border: 2px solid #C2185B;
+  background-color: var(--primary);
+  border: 2px solid var(--primary-dark);
   color: white;
   font-weight: 600;
   border-radius: 12px;
   padding: 8px 16px;
-  box-shadow: 0 2px 4px rgba(233, 30, 99, 0.3);
+  box-shadow: 0 2px 4px rgba(var(--primary-rgb), 0.3);
 }
 
 .fc .fc-button-primary:hover {
-  background-color: #C2185B;
+  background-color: var(--primary-dark);
   border-color: #AD1457;
 }
 
@@ -28,25 +28,25 @@
 }
 
 .fc .fc-toolbar-title {
-  color: #E91E63;
+  color: var(--primary);
   font-weight: 700;
   font-size: 1.5rem;
 }
 
 .fc-daygrid-day {
-  border: 2px solid rgba(233, 30, 99, 0.15) !important;
+  border: 2px solid rgba(var(--primary-rgb), 0.15) !important;
   transition: all 0.2s ease;
 }
 
 .fc-daygrid-day:hover {
-  background-color: rgba(233, 30, 99, 0.05) !important;
+  background-color: rgba(var(--primary-rgb), 0.05) !important;
   cursor: pointer;
   transform: scale(1.02);
 }
 
 .fc-daygrid-day.fc-day-today {
-  background-color: rgba(233, 30, 99, 0.1) !important;
-  border: 2px solid #E91E63 !important;
+  background-color: rgba(var(--primary-rgb), 0.1) !important;
+  border: 2px solid var(--primary) !important;
 }
 
 .fc-daygrid-day-number {
@@ -56,12 +56,12 @@
 }
 
 .fc-col-header-cell {
-  background-color: rgba(233, 30, 99, 0.05) !important;
-  border: 2px solid rgba(233, 30, 99, 0.2) !important;
+  background-color: rgba(var(--primary-rgb), 0.05) !important;
+  border: 2px solid rgba(var(--primary-rgb), 0.2) !important;
 }
 
 .fc-col-header-cell-cushion {
-  color: #E91E63;
+  color: var(--primary);
   font-weight: 700;
   padding: 12px 0;
 }
@@ -90,9 +90,9 @@
   align-items: center;
   gap: 6px;
   padding: 2px 6px;
-  background: linear-gradient(135deg, #FF6B9D 0%, #E91E63 100%);
+  background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
   border-radius: 12px;
-  box-shadow: 0 2px 4px rgba(233, 30, 99, 0.3);
+  box-shadow: 0 2px 4px rgba(var(--primary-rgb), 0.3);
 }
 
 .indicator-text {
@@ -107,7 +107,7 @@
 .indicator-count {
   font-size: 0.65rem;
   font-weight: 700;
-  color: #E91E63;
+  color: var(--primary);
   background: white;
   border-radius: 50%;
   min-width: 14px;
@@ -116,7 +116,7 @@
   align-items: center;
   justify-content: center;
   padding: 0 3px;
-  border: 1.5px solid rgba(233, 30, 99, 0.3);
+  border: 1.5px solid rgba(var(--primary-rgb), 0.3);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
   line-height: 1;
 }
@@ -176,3 +176,4 @@
     min-height: 50px;
   }
 }
+

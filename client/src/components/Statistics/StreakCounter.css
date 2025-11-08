@@ -1,6 +1,6 @@
 .streak-counter {
   background: white;
-  border: 2px solid rgba(233, 30, 99, 0.2);
+  border: 2px solid rgba(var(--primary-rgb), 0.2);
   border-radius: 16px;
   padding: 24px;
   display: flex;
@@ -9,13 +9,13 @@
   position: relative;
   transition: all 0.3s;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(233, 30, 99, 0.1);
+  box-shadow: 0 2px 8px rgba(var(--primary-rgb), 0.1);
 }
 
 .streak-counter:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 20px rgba(233, 30, 99, 0.2);
-  border-color: #E91E63;
+  box-shadow: 0 8px 20px rgba(var(--primary-rgb), 0.2);
+  border-color: var(--primary);
 }
 
 .streak-counter.active .streak-flame {
@@ -59,7 +59,7 @@
 .streak-value {
   font-size: 1.8rem;
   font-weight: 700;
-  background: linear-gradient(135deg, #FF6B9D 0%, #E91E63 100%);
+  background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -69,7 +69,7 @@
 .streak-divider {
   width: 2px;
   height: 60px;
-  background: rgba(233, 30, 99, 0.2);
+  background: rgba(var(--primary-rgb), 0.2);
   border-radius: 2px;
 }
 
@@ -113,3 +113,4 @@
     font-size: 1.5rem;
   }
 }
+

@@ -1,9 +1,9 @@
 .app-footer {
-  background: linear-gradient(135deg, #FF6B9D 0%, #E91E63 100%);
+  background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
   color: white;
   margin-top: 60px;
   padding: 40px 0 20px;
-  box-shadow: 0 -4px 20px rgba(233, 30, 99, 0.2);
+  box-shadow: 0 -4px 20px rgba(var(--primary-rgb), 0.2);
 }
 
 .footer-content {
@@ -197,3 +197,4 @@
     font-size: 0.85rem;
   }
 }
+

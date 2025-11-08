@@ -4,7 +4,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(233, 30, 99, 0.4);
+  background-color: rgba(var(--primary-rgb), 0.4);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -20,8 +20,8 @@
   max-width: 700px;
   max-height: 85vh;
   overflow-y: auto;
-  box-shadow: 0 4px 20px rgba(233, 30, 99, 0.15),
-              0 0 0 2px rgba(233, 30, 99, 0.1);
+  box-shadow: 0 4px 20px rgba(var(--primary-rgb), 0.15),
+              0 0 0 2px rgba(var(--primary-rgb), 0.1);
 }
 
 .day-view-header {
@@ -29,8 +29,8 @@
   justify-content: space-between;
   align-items: center;
   padding: 24px 28px;
-  border-bottom: 2px solid rgba(233, 30, 99, 0.2);
-  background: linear-gradient(135deg, #FF6B9D 0%, #E91E63 100%);
+  border-bottom: 2px solid rgba(var(--primary-rgb), 0.2);
+  background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
 }
 
 .day-view-header h2 {
@@ -73,8 +73,8 @@
 .loading-spinner {
   width: 50px;
   height: 50px;
-  border: 4px solid rgba(233, 30, 99, 0.2);
-  border-top: 4px solid #E91E63;
+  border: 4px solid rgba(var(--primary-rgb), 0.2);
+  border-top: 4px solid var(--primary);
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin: 0 auto 20px;
@@ -110,7 +110,7 @@
 }
 
 .add-progress-button-big {
-  background: linear-gradient(135deg, #FF6B9D 0%, #E91E63 100%);
+  background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
   color: white;
   border: none;
   padding: 16px 32px;
@@ -118,14 +118,14 @@
   font-weight: 700;
   border-radius: 16px;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(233, 30, 99, 0.3);
+  box-shadow: 0 2px 8px rgba(var(--primary-rgb), 0.3);
   transition: all 0.2s;
 }
 
 .add-progress-button-big:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(233, 30, 99, 0.4);
-  background: linear-gradient(135deg, #E91E63 0%, #C2185B 100%);
+  box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.4);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
 }
 
 .add-progress-button-big:active {
@@ -142,8 +142,8 @@
 .add-progress-button {
   width: 100%;
   background: white;
-  color: #E91E63;
-  border: 3px dashed #FF6B9D;
+  color: var(--primary);
+  border: 3px dashed var(--primary-light);
   padding: 14px 24px;
   font-size: 1rem;
   font-weight: 700;
@@ -153,9 +153,9 @@
 }
 
 .add-progress-button:hover {
-  background: rgba(233, 30, 99, 0.05);
-  border-color: #E91E63;
-  color: #C2185B;
+  background: rgba(var(--primary-rgb), 0.05);
+  border-color: var(--primary);
+  color: var(--primary-dark);
 }
 
 @media (max-width: 768px) {
@@ -189,3 +189,4 @@
     font-size: 1rem;
   }
 }
+
