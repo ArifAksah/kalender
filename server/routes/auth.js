@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const supabase = require('../config/supabase');
 const { authLimiter } = require('../middleware/rateLimiter');
-const { sendVerificationEmail, sendWelcomeEmail } = require('../services/emailService');
+const { sendVerificationEmail, sendWelcomeEmail, sendPasswordResetEmail } = require('../services/emailService');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-this-in-production';
 const JWT_EXPIRES_IN = '7d';
@@ -342,6 +342,147 @@ router.post('/resend-verification', authLimiter, async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Failed to send verification email.'
+    });
+  }
+});
+
+// Request password reset
+router.post('/forgot-password', authLimiter, async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email is required'
+      });
+    }
+
+    // Find user
+    const { data: user, error: userError } = await supabase
+      .from('users')
+      .select('id, username, email')
+      .eq('email', email)
+      .single();
+
+    // Don't reveal if email exists (security best practice)
+    if (userError || !user) {
+      return res.json({
+        success: true,
+        message: 'If the email exists, a password reset link has been sent.'
+      });
+    }
+
+    // Delete old reset tokens
+    await supabase
+      .from('password_reset_tokens')
+      .delete()
+      .eq('user_id', user.id);
+
+    // Generate reset token
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+
+    await supabase
+      .from('password_reset_tokens')
+      .insert([{
+        user_id: user.id,
+        token: resetToken,
+        expires_at: expiresAt.toISOString()
+      }]);
+
+    // Send password reset email
+    await sendPasswordResetEmail(user.email, resetToken, user.username);
+
+    res.json({
+      success: true,
+      message: 'If the email exists, a password reset link has been sent.'
+    });
+  } catch (error) {
+    console.error('Forgot password error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to process password reset request.'
+    });
+  }
+});
+
+// Reset password with token
+router.post('/reset-password', authLimiter, async (req, res) => {
+  try {
+    const { token, newPassword } = req.body;
+
+    if (!token || !newPassword) {
+      return res.status(400).json({
+        success: false,
+        message: 'Token and new password are required'
+      });
+    }
+
+    // Validate password strength
+    if (newPassword.length < 8) {
+      return res.status(400).json({
+        success: false,
+        message: 'Password must be at least 8 characters'
+      });
+    }
+
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/;
+    if (!passwordRegex.test(newPassword)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Password must contain at least one uppercase letter, one lowercase letter, and one number'
+      });
+    }
+
+    // Find reset token
+    const { data: tokenData, error: tokenError } = await supabase
+      .from('password_reset_tokens')
+      .select('*, users(*)')
+      .eq('token', token)
+      .single();
+
+    if (tokenError || !tokenData) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid or expired reset token'
+      });
+    }
+
+    // Check if token expired
+    if (new Date() > new Date(tokenData.expires_at)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Reset token has expired. Please request a new one.'
+      });
+    }
+
+    // Hash new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update user password
+    const { error: updateError } = await supabase
+      .from('users')
+      .update({ password: hashedPassword })
+      .eq('id', tokenData.user_id);
+
+    if (updateError) throw updateError;
+
+    // Delete used token
+    await supabase
+      .from('password_reset_tokens')
+      .delete()
+      .eq('token', token);
+
+    res.json({
+      success: true,
+      message: 'Password reset successfully. You can now login with your new password.'
+    });
+  } catch (error) {
+    console.error('Reset password error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to reset password.'
     });
   }
 });

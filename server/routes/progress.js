@@ -3,6 +3,9 @@ const router = express.Router();
 const supabase = require('../config/supabase');
 const upload = require('../middleware/upload');
 const authMiddleware = require('../middleware/auth');
+const { awardXP, checkAchievements } = require('../services/gamificationService');
+const { XP_VALUES } = require('../utils/xpCalculator');
+const { autoTagProgress } = require('../services/aiService');
 const fs = require('fs');
 const path = require('path');
 
@@ -101,6 +104,18 @@ router.post('/', upload.array('gambar', 5), async (req, res) => {
     
     const gambarPaths = req.files ? req.files.map(file => `/uploads/${file.filename}`) : [];
     
+    // Calculate XP earned
+    let xpEarned = XP_VALUES.CREATE_PROGRESS;
+    if (gambarPaths.length > 0) {
+      xpEarned += gambarPaths.length * XP_VALUES.ADD_IMAGE;
+    }
+    
+    // Auto-tag if catatan provided
+    let autoTags = [];
+    if (catatan) {
+      autoTags = autoTagProgress(catatan);
+    }
+    
     const { data, error } = await supabase
       .from('progress')
       .insert([{
@@ -108,12 +123,25 @@ router.post('/', upload.array('gambar', 5), async (req, res) => {
         tanggal,
         catatan: catatan || '',
         gambar: gambarPaths,
+        tags: autoTags.length > 0 ? autoTags : null,
         dibuat: new Date().toISOString(),
-        update: new Date().toISOString()
+        update: new Date().toISOString(),
+        xp_earned: xpEarned
       }])
       .select();
     
     if (error) throw error;
+    
+    // Award XP
+    try {
+      await awardXP(req.user.id, xpEarned);
+      // Check achievements asynchronously
+      checkAchievements(req.user.id, 'CREATE_PROGRESS', { progressId: data[0].id })
+        .catch(err => console.error('Error checking achievements:', err));
+    } catch (xpError) {
+      console.error('Error awarding XP:', xpError);
+      // Don't fail the request if XP fails
+    }
     
     res.status(201).json({ success: true, data: data[0] });
   } catch (error) {

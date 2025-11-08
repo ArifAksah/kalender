@@ -1,0 +1,74 @@
+.leaderboard-container {
+  background: white;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(233, 30, 99, 0.15),
+              0 0 0 2px rgba(233, 30, 99, 0.1);
+  border: 2px solid rgba(233, 30, 99, 0.2);
+  margin-bottom: 20px;
+}
+
+.leaderboard-loading {
+  text-align: center;
+  padding: 40px;
+  color: #999;
+}
+
+.leaderboard-container h3 {
+  margin: 0 0 20px 0;
+  color: #E91E63;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.leaderboard-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.leaderboard-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 12px;
+  border-radius: 12px;
+  background: rgba(233, 30, 99, 0.03);
+  border: 2px solid rgba(233, 30, 99, 0.1);
+  transition: all 0.2s;
+}
+
+.leaderboard-item:hover {
+  background: rgba(233, 30, 99, 0.05);
+  border-color: rgba(233, 30, 99, 0.2);
+}
+
+.leaderboard-item.leaderboard-top {
+  background: linear-gradient(135deg, rgba(255, 107, 157, 0.15) 0%, rgba(233, 30, 99, 0.1) 100%);
+  border: 2px solid #E91E63;
+  box-shadow: 0 4px 12px rgba(233, 30, 99, 0.2);
+}
+
+.leaderboard-rank {
+  font-size: 20px;
+  font-weight: 700;
+  min-width: 40px;
+  text-align: center;
+  color: #E91E63;
+}
+
+.leaderboard-user {
+  flex: 1;
+}
+
+.leaderboard-username {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.leaderboard-stats {
+  font-size: 12px;
+  color: #666;
+}
+

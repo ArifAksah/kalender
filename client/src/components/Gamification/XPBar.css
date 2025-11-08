@@ -1,0 +1,61 @@
+.xp-bar-container {
+  background: white;
+  padding: 15px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(233, 30, 99, 0.15),
+              0 0 0 2px rgba(233, 30, 99, 0.1);
+  border: 2px solid rgba(233, 30, 99, 0.2);
+  margin-bottom: 20px;
+}
+
+.xp-bar-loading {
+  text-align: center;
+  padding: 20px;
+  color: #999;
+}
+
+.xp-bar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.xp-level {
+  font-size: 18px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #FF6B9D 0%, #E91E63 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.xp-points {
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+}
+
+.xp-bar-wrapper {
+  width: 100%;
+  height: 20px;
+  background: rgba(233, 30, 99, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.xp-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #FF6B9D 0%, #E91E63 100%);
+  border-radius: 10px;
+  transition: width 0.5s ease;
+  box-shadow: 0 2px 4px rgba(233, 30, 99, 0.3);
+}
+
+.xp-bar-footer {
+  font-size: 12px;
+  color: #999;
+  text-align: center;
+}
+

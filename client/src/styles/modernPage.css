@@ -1,0 +1,205 @@
+/* Modern Page Style - Shared across all pages */
+.modern-page-container {
+  min-height: 100vh;
+  width: 100%;
+  background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 50%, #3B82F6 100%);
+  background-size: 200% 200%;
+  animation: gradientShift 10s ease infinite;
+  padding: 20px;
+  margin: 0;
+  box-sizing: border-box;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.modern-page-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 2px,
+      rgba(255, 255, 255, 0.03) 2px,
+      rgba(255, 255, 255, 0.03) 4px
+    );
+  pointer-events: none;
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.modern-card {
+  width: 100%;
+  max-width: 600px;
+  background: linear-gradient(135deg, rgba(147, 197, 253, 0.4) 0%, rgba(251, 146, 196, 0.4) 100%);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border-radius: 60px 40px 60px 40px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(255, 255, 255, 0.2) inset,
+    0 8px 32px rgba(139, 92, 246, 0.3);
+  overflow: hidden;
+  animation: slideInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+  padding: 0;
+}
+
+.modern-card-large {
+  max-width: 900px;
+}
+
+.modern-card-full {
+  max-width: 100%;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modern-card-header {
+  padding: 50px 40px 40px;
+  text-align: center;
+  background: transparent;
+}
+
+.modern-card-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: white;
+  margin: 0;
+  letter-spacing: 0.5px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.modern-card-subtitle {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin-top: 12px;
+  font-weight: 500;
+}
+
+.modern-card-content {
+  padding: 0 40px 40px;
+  background: transparent;
+}
+
+.modern-card-footer {
+  padding: 24px 40px 40px;
+  background: transparent;
+  text-align: center;
+}
+
+/* Dashboard and other pages with Navbar */
+.modern-page-with-navbar {
+  min-height: 100vh;
+  width: 100%;
+  background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 50%, #3B82F6 100%);
+  background-size: 200% 200%;
+  animation: gradientShift 10s ease infinite;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.modern-page-with-navbar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 2px,
+      rgba(255, 255, 255, 0.03) 2px,
+      rgba(255, 255, 255, 0.03) 4px
+    );
+  pointer-events: none;
+  z-index: 0;
+}
+
+.modern-page-content {
+  position: relative;
+  z-index: 1;
+  padding: 20px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .modern-page-container {
+    padding: 15px;
+  }
+
+  .modern-card {
+    border-radius: 50px 30px 50px 30px;
+  }
+
+  .modern-card-header {
+    padding: 40px 30px 30px;
+  }
+
+  .modern-card-title {
+    font-size: 1.75rem;
+  }
+
+  .modern-card-content {
+    padding: 0 30px 30px;
+  }
+
+  .modern-card-footer {
+    padding: 20px 30px 30px;
+  }
+}
+
+@media (max-width: 480px) {
+  .modern-page-container {
+    padding: 10px;
+  }
+
+  .modern-card {
+    border-radius: 40px 25px 40px 25px;
+  }
+
+  .modern-card-header {
+    padding: 35px 20px 25px;
+  }
+
+  .modern-card-title {
+    font-size: 1.5rem;
+  }
+
+  .modern-card-content {
+    padding: 0 20px 25px;
+  }
+
+  .modern-card-footer {
+    padding: 20px 20px 25px;
+  }
+}
+

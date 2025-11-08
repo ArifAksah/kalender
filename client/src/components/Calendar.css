@@ -7,61 +7,61 @@
 }
 
 .fc .fc-button-primary {
-  background-color: #FF9F7F;
-  border: 2px solid #FF8C61;
+  background-color: #E91E63;
+  border: 2px solid #C2185B;
   color: white;
   font-weight: 600;
   border-radius: 12px;
   padding: 8px 16px;
-  box-shadow: 0 2px 4px rgba(255, 140, 97, 0.3);
+  box-shadow: 0 2px 4px rgba(233, 30, 99, 0.3);
 }
 
 .fc .fc-button-primary:hover {
-  background-color: #FF8C61;
-  border-color: #FF7A47;
+  background-color: #C2185B;
+  border-color: #AD1457;
 }
 
 .fc .fc-button-primary:not(:disabled).fc-button-active,
 .fc .fc-button-primary:not(:disabled):active {
-  background-color: #FF7A47;
-  border-color: #FF6730;
+  background-color: #AD1457;
+  border-color: #880E4F;
 }
 
 .fc .fc-toolbar-title {
-  color: #5C4742;
+  color: #E91E63;
   font-weight: 700;
   font-size: 1.5rem;
 }
 
 .fc-daygrid-day {
-  border: 2px solid #FFE5CC !important;
+  border: 2px solid rgba(233, 30, 99, 0.15) !important;
   transition: all 0.2s ease;
 }
 
 .fc-daygrid-day:hover {
-  background-color: #FFF8E7 !important;
+  background-color: rgba(233, 30, 99, 0.05) !important;
   cursor: pointer;
   transform: scale(1.02);
 }
 
 .fc-daygrid-day.fc-day-today {
-  background-color: #FFF0DB !important;
-  border: 2px solid #FFB88C !important;
+  background-color: rgba(233, 30, 99, 0.1) !important;
+  border: 2px solid #E91E63 !important;
 }
 
 .fc-daygrid-day-number {
-  color: #5C4742;
+  color: #333;
   font-weight: 600;
   padding: 8px !important;
 }
 
 .fc-col-header-cell {
-  background-color: #FFE5CC !important;
-  border: 2px solid #FFD4B3 !important;
+  background-color: rgba(233, 30, 99, 0.05) !important;
+  border: 2px solid rgba(233, 30, 99, 0.2) !important;
 }
 
 .fc-col-header-cell-cushion {
-  color: #8B7355;
+  color: #E91E63;
   font-weight: 700;
   padding: 12px 0;
 }
@@ -81,7 +81,7 @@
 
 .day-number {
   font-weight: 600;
-  color: #5C4742;
+  color: #333;
   font-size: 1rem;
 }
 
@@ -90,24 +90,24 @@
   align-items: center;
   gap: 6px;
   padding: 2px 6px;
-  background: linear-gradient(135deg, #A8E6CF 0%, #7ED7A8 100%);
+  background: linear-gradient(135deg, #FF6B9D 0%, #E91E63 100%);
   border-radius: 12px;
-  box-shadow: 0 2px 4px rgba(126, 215, 168, 0.3);
+  box-shadow: 0 2px 4px rgba(233, 30, 99, 0.3);
 }
 
 .indicator-text {
   font-size: 0.7rem;
   font-weight: 700;
-  color: #2D5F4E;
+  color: white;
   line-height: 1;
   letter-spacing: 0.3px;
-  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.5);
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
 }
 
 .indicator-count {
   font-size: 0.65rem;
   font-weight: 700;
-  color: #FF9F7F;
+  color: #E91E63;
   background: white;
   border-radius: 50%;
   min-width: 14px;
@@ -116,7 +116,7 @@
   align-items: center;
   justify-content: center;
   padding: 0 3px;
-  border: 1.5px solid #FFE5CC;
+  border: 1.5px solid rgba(233, 30, 99, 0.3);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
   line-height: 1;
 }

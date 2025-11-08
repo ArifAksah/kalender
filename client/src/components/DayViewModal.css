@@ -4,7 +4,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(92, 71, 66, 0.6);
+  background-color: rgba(233, 30, 99, 0.4);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -20,8 +20,8 @@
   max-width: 700px;
   max-height: 85vh;
   overflow-y: auto;
-  box-shadow: 0 8px 24px rgba(92, 71, 66, 0.2),
-              0 0 0 3px #FFE5CC;
+  box-shadow: 0 4px 20px rgba(233, 30, 99, 0.15),
+              0 0 0 2px rgba(233, 30, 99, 0.1);
 }
 
 .day-view-header {
@@ -29,13 +29,13 @@
   justify-content: space-between;
   align-items: center;
   padding: 24px 28px;
-  border-bottom: 3px solid #FFE5CC;
-  background: linear-gradient(to bottom, #FFF8E7, white);
+  border-bottom: 2px solid rgba(233, 30, 99, 0.2);
+  background: linear-gradient(135deg, #FF6B9D 0%, #E91E63 100%);
 }
 
 .day-view-header h2 {
   font-size: 1.4rem;
-  color: #5C4742;
+  color: white;
   margin: 0;
   font-weight: 700;
 }
@@ -44,7 +44,7 @@
   background: none;
   border: none;
   font-size: 2.2rem;
-  color: #8B7355;
+  color: white;
   cursor: pointer;
   padding: 0;
   width: 36px;
@@ -57,8 +57,8 @@
 }
 
 .close-button:hover {
-  background-color: #FFE5CC;
-  color: #5C4742;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
 }
 
 .day-view-body {
@@ -73,8 +73,8 @@
 .loading-spinner {
   width: 50px;
   height: 50px;
-  border: 4px solid #FFE5CC;
-  border-top: 4px solid #FF9F7F;
+  border: 4px solid rgba(233, 30, 99, 0.2);
+  border-top: 4px solid #E91E63;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin: 0 auto 20px;
@@ -86,7 +86,7 @@
 }
 
 .loading-state p {
-  color: #8B7355;
+  color: #666;
   font-size: 1.1rem;
   font-weight: 500;
 }
@@ -103,14 +103,14 @@
 }
 
 .empty-state p {
-  color: #8B7355;
+  color: #666;
   font-size: 1.1rem;
   margin-bottom: 24px;
   font-weight: 500;
 }
 
 .add-progress-button-big {
-  background: linear-gradient(135deg, #FF9F7F 0%, #FFB88C 100%);
+  background: linear-gradient(135deg, #FF6B9D 0%, #E91E63 100%);
   color: white;
   border: none;
   padding: 16px 32px;
@@ -118,13 +118,14 @@
   font-weight: 700;
   border-radius: 16px;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(255, 159, 127, 0.4);
+  box-shadow: 0 2px 8px rgba(233, 30, 99, 0.3);
   transition: all 0.2s;
 }
 
 .add-progress-button-big:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(255, 159, 127, 0.5);
+  box-shadow: 0 4px 12px rgba(233, 30, 99, 0.4);
+  background: linear-gradient(135deg, #E91E63 0%, #C2185B 100%);
 }
 
 .add-progress-button-big:active {
@@ -141,8 +142,8 @@
 .add-progress-button {
   width: 100%;
   background: white;
-  color: #FF9F7F;
-  border: 3px dashed #FFB88C;
+  color: #E91E63;
+  border: 3px dashed #FF6B9D;
   padding: 14px 24px;
   font-size: 1rem;
   font-weight: 700;
@@ -152,9 +153,9 @@
 }
 
 .add-progress-button:hover {
-  background: #FFF8E7;
-  border-color: #FF9F7F;
-  color: #FF8C61;
+  background: rgba(233, 30, 99, 0.05);
+  border-color: #E91E63;
+  color: #C2185B;
 }
 
 @media (max-width: 768px) {

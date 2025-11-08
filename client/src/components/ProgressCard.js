@@ -1,12 +1,17 @@
 import React, { useState } from 'react';
 import { deleteProgress } from '../services/api';
 import ImagePreview from './ImagePreview';
+import CommentSection from './Collaboration/CommentSection';
+import Reactions from './Collaboration/Reactions';
+import ShareModal from './Collaboration/ShareModal';
 import './ProgressCard.css';
 
 function ProgressCard({ progress, onEdit, onUpdate }) {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [showComments, setShowComments] = useState(false);
 
   const handleDelete = async () => {
     try {
@@ -35,6 +40,9 @@ function ProgressCard({ progress, onEdit, onUpdate }) {
           {formatTime(progress.dibuat)}
         </div>
         <div className="progress-actions">
+          <button className="share-btn" onClick={() => setShowShareModal(true)} title="Share">
+            🔗
+          </button>
           <button className="edit-btn" onClick={onEdit} title="Edit">
             ✏️
           </button>
@@ -79,6 +87,22 @@ function ProgressCard({ progress, onEdit, onUpdate }) {
         )}
       </div>
 
+      {/* Collaboration Features */}
+      <div className="progress-collaboration">
+        <Reactions progressId={progress.id} />
+        <div className="collaboration-actions">
+          <button 
+            className="comment-toggle-btn"
+            onClick={() => setShowComments(!showComments)}
+          >
+            💬 Comments
+          </button>
+        </div>
+        {showComments && (
+          <CommentSection progressId={progress.id} />
+        )}
+      </div>
+
       {showDeleteConfirm && (
         <div className="delete-confirm-overlay">
           <div className="delete-confirm-box">
@@ -107,6 +131,17 @@ function ProgressCard({ progress, onEdit, onUpdate }) {
         <ImagePreview 
           imageUrl={previewImage} 
           onClose={() => setPreviewImage(null)} 
+        />
+      )}
+
+      {showShareModal && (
+        <ShareModal
+          progressId={progress.id}
+          onClose={() => setShowShareModal(false)}
+          onShare={() => {
+            setShowShareModal(false);
+            if (onUpdate) onUpdate();
+          }}
         />
       )}
     </div>

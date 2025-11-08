@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { useAuth } from '../context/AuthContext';
-import { useTheme } from '../context/ThemeContext';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Navbar from '../components/Navbar/Navbar';
+import Footer from '../components/Footer/Footer';
 import Calendar from '../components/Calendar';
 import DayViewModal from '../components/DayViewModal';
 import StatsCard from '../components/Statistics/StatsCard';
@@ -9,12 +10,11 @@ import SearchBar from '../components/Search/SearchBar';
 import ExportButton from '../components/Export/ExportButton';
 import { getAllProgress, getProgressByMonth } from '../services/api';
 import useStatistics from '../hooks/useStatistics';
-import { useSearch } from '../hooks/useSearch';
+import '../styles/pageWrapper.css';
 import './Dashboard.css';
 
 function Dashboard() {
-  const { user, logout } = useAuth();
-  const { theme, toggleTheme } = useTheme();
+  const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [allProgressData, setAllProgressData] = useState([]); // For statistics
@@ -26,6 +26,16 @@ function Dashboard() {
   // Calculate statistics from ALL data
   const stats = useStatistics(allProgressData);
   
+  // Filter progress data based on search term
+  const filteredMonthProgressData = React.useMemo(() => {
+    if (!searchTerm.trim()) {
+      return monthProgressData;
+    }
+    return monthProgressData.filter(progress => 
+      progress.catatan?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [monthProgressData, searchTerm]);
+  
   // Get ACTUAL current month name (for statistics display)
   const actualCurrentMonth = new Date().getMonth() + 1;
   const actualCurrentYear = new Date().getFullYear();
@@ -34,17 +44,8 @@ function Dashboard() {
   // Get calendar month name (for export - based on calendar view)
   const monthName = new Date(currentYear, currentMonth - 1).toLocaleString('default', { month: 'long' });
 
-  // Load ALL progress data once on mount (for statistics)
-  React.useEffect(() => {
-    loadAllProgressData();
-  }, []);
-
-  // Load monthly progress data when month changes (for calendar)
-  React.useEffect(() => {
-    loadMonthProgressData();
-  }, [currentMonth, currentYear]);
-
-  const loadAllProgressData = async () => {
+  // Define load functions with useCallback
+  const loadAllProgressData = useCallback(async () => {
     try {
       const data = await getAllProgress();
       setAllProgressData(data || []);
@@ -52,9 +53,9 @@ function Dashboard() {
       console.error('Error loading all progress data:', error);
       setAllProgressData([]);
     }
-  };
+  }, []);
 
-  const loadMonthProgressData = async () => {
+  const loadMonthProgressData = useCallback(async () => {
     try {
       const data = await getProgressByMonth(currentMonth, currentYear);
       setMonthProgressData(data || []);
@@ -62,7 +63,17 @@ function Dashboard() {
       console.error('Error loading month progress data:', error);
       setMonthProgressData([]);
     }
-  };
+  }, [currentMonth, currentYear]);
+
+  // Load ALL progress data once on mount (for statistics)
+  useEffect(() => {
+    loadAllProgressData();
+  }, [loadAllProgressData]);
+
+  // Load monthly progress data when month changes (for calendar)
+  useEffect(() => {
+    loadMonthProgressData();
+  }, [loadMonthProgressData]);
 
   const handleDateClick = (dateInfo) => {
     setSelectedDate(dateInfo.dateStr);
@@ -95,31 +106,9 @@ function Dashboard() {
   };
 
   return (
-    <div className="dashboard-wrapper">
-      <header className="dashboard-header">
-        <div className="header-content">
-          <div className="header-left">
-            <h1>✏️ Progres Tracker</h1>
-            <p>Track your daily progress</p>
-          </div>
-          <div className="header-right">
-            <button onClick={toggleTheme} className="theme-toggle" title="Toggle Dark Mode">
-              {theme === 'light' ? '🌙' : '☀️'}
-            </button>
-            <div className="user-info">
-              <div className="user-avatar">
-                {user?.username?.charAt(0).toUpperCase()}
-              </div>
-              <span className="user-name">{user?.username}</span>
-            </div>
-            <button onClick={logout} className="logout-button">
-              Logout
-            </button>
-          </div>
-        </div>
-      </header>
-      
-      <main className="dashboard-main">
+    <div className="page-wrapper">
+      <Navbar />
+      <main className="page-main">
         {/* Statistics Section */}
         <div className="dashboard-stats">
           <div className="stats-row">
@@ -165,27 +154,93 @@ function Dashboard() {
             onSearch={setSearchTerm}
             placeholder="Search progress notes..."
           />
-          <ExportButton
-            progressData={monthProgressData}
-            month={monthName}
-            year={currentYear}
-            calendarElementId="calendar-container"
-          />
+          <div className="dashboard-actions">
+            <button 
+              onClick={() => navigate('/analytics')} 
+              className="dashboard-action-button analytics-button"
+            >
+              📊 Analytics
+            </button>
+            <button 
+              onClick={() => navigate('/achievements')} 
+              className="dashboard-action-button gamification-button"
+            >
+              🏆 Achievements
+            </button>
+            <ExportButton
+              progressData={monthProgressData}
+              month={monthName}
+              year={currentYear}
+              calendarElementId="calendar-container"
+            />
+          </div>
         </div>
+
+        {/* Search Results */}
+        {searchTerm && filteredMonthProgressData.length > 0 && (
+          <div className="search-results">
+            <h3 className="search-results-title">
+              🔍 Search Results ({filteredMonthProgressData.length})
+            </h3>
+            <div className="search-results-list">
+              {filteredMonthProgressData.map((progress) => (
+                <div 
+                  key={progress.id} 
+                  className="search-result-item"
+                  onClick={() => {
+                    setSelectedDate(progress.tanggal);
+                    setModalOpen(true);
+                  }}
+                >
+                  <div className="search-result-date">
+                    📅 {new Date(progress.tanggal).toLocaleDateString('id-ID', { 
+                      weekday: 'long', 
+                      year: 'numeric', 
+                      month: 'long', 
+                      day: 'numeric' 
+                    })}
+                  </div>
+                  <div className="search-result-time">
+                    🕐 {new Date(progress.created_at).toLocaleTimeString('id-ID', {
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })}
+                  </div>
+                  <div className="search-result-note">
+                    {progress.catatan}
+                  </div>
+                  {progress.dokumentasi && progress.dokumentasi.length > 0 && (
+                    <div className="search-result-images">
+                      📷 {progress.dokumentasi.length} image{progress.dokumentasi.length > 1 ? 's' : ''}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {searchTerm && filteredMonthProgressData.length === 0 && (
+          <div className="search-no-results">
+            <p>🔍 No progress found matching "{searchTerm}"</p>
+          </div>
+        )}
 
         {/* Calendar Section */}
         <div id="calendar-container">
           <div className="calendar-header-info">
             <span className="viewing-month">📅 Viewing: <strong>{monthName} {currentYear}</strong></span>
-            <span className="data-count">({monthProgressData.length} progress entries)</span>
+            <span className="data-count">({filteredMonthProgressData.length} progress entries{searchTerm ? ` (filtered)` : ''})</span>
           </div>
           <Calendar 
             onDateClick={handleDateClick}
-            progressData={monthProgressData}
+            progressData={filteredMonthProgressData}
             onMonthChange={handleMonthChange}
           />
         </div>
       </main>
+
+      <Footer />
 
       {modalOpen && (
         <DayViewModal

@@ -1,0 +1,24 @@
+.sentiment-display {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border: 2px solid;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.sentiment-emoji {
+  font-size: 18px;
+}
+
+.sentiment-label {
+  text-transform: capitalize;
+}
+
+.sentiment-score {
+  font-size: 12px;
+  opacity: 0.8;
+}
+

@@ -3,16 +3,17 @@
   align-items: center;
   gap: 16px;
   padding: 20px;
-  background: var(--bg-secondary);
-  border: 2px solid var(--border-color);
+  background: white;
+  border: 2px solid rgba(233, 30, 99, 0.2);
   border-radius: 16px;
   transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(233, 30, 99, 0.1);
 }
 
 .stats-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 6px 16px var(--shadow-hover);
-  border-color: var(--border-hover);
+  box-shadow: 0 6px 16px rgba(233, 30, 99, 0.2);
+  border-color: #E91E63;
 }
 
 .stats-icon {
@@ -33,20 +34,23 @@
 .stats-title {
   font-size: 0.9rem;
   font-weight: 600;
-  color: var(--text-secondary);
+  color: #666;
   margin-bottom: 6px;
 }
 
 .stats-value {
   font-size: 2rem;
   font-weight: 700;
-  color: var(--text-primary);
+  background: linear-gradient(135deg, #FF6B9D 0%, #E91E63 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   line-height: 1;
 }
 
 .stats-subtitle {
   font-size: 0.85rem;
-  color: var(--text-tertiary);
+  color: #999;
 }
 
 @media (max-width: 768px) {

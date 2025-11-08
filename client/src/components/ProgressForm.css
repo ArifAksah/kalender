@@ -4,7 +4,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(92, 71, 66, 0.6);
+  background-color: rgba(233, 30, 99, 0.4);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -20,8 +20,8 @@
   max-width: 600px;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 8px 24px rgba(92, 71, 66, 0.2),
-              0 0 0 3px #FFE5CC;
+  box-shadow: 0 4px 20px rgba(233, 30, 99, 0.15),
+              0 0 0 2px rgba(233, 30, 99, 0.1);
 }
 
 .modal-header {
@@ -29,13 +29,13 @@
   justify-content: space-between;
   align-items: center;
   padding: 24px 28px;
-  border-bottom: 3px solid #FFE5CC;
-  background: linear-gradient(to bottom, #FFF8E7, white);
+  border-bottom: 2px solid rgba(233, 30, 99, 0.2);
+  background: linear-gradient(135deg, #FF6B9D 0%, #E91E63 100%);
 }
 
 .modal-header h2 {
   font-size: 1.4rem;
-  color: #5C4742;
+  color: white;
   margin: 0;
   font-weight: 700;
 }
@@ -44,7 +44,7 @@
   background: none;
   border: none;
   font-size: 2.2rem;
-  color: #8B7355;
+  color: white;
   cursor: pointer;
   padding: 0;
   width: 36px;
@@ -57,8 +57,8 @@
 }
 
 .close-button:hover {
-  background-color: #FFE5CC;
-  color: #5C4742;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
 }
 
 .modal-body {
@@ -72,7 +72,7 @@
 .form-group label {
   display: block;
   font-weight: 700;
-  color: #5C4742;
+  color: #333;
   margin-bottom: 10px;
   font-size: 1rem;
 }
@@ -80,37 +80,38 @@
 .form-group textarea {
   width: 100%;
   padding: 14px;
-  border: 3px solid #FFE5CC;
+  border: 2px solid rgba(233, 30, 99, 0.2);
   border-radius: 12px;
   font-size: 1rem;
   font-family: inherit;
   resize: vertical;
   transition: all 0.2s;
-  background: #FFFBF5;
-  color: #5C4742;
+  background: white;
+  color: #333;
 }
 
 .form-group textarea:focus {
   outline: none;
-  border-color: #FFB88C;
+  border-color: #E91E63;
   background: white;
+  box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.1);
 }
 
 .file-input {
   width: 100%;
   padding: 12px;
-  border: 3px dashed #FFD4B3;
+  border: 2px dashed #FF6B9D;
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s;
-  background: #FFF8E7;
-  color: #5C4742;
+  background: rgba(233, 30, 99, 0.05);
+  color: #E91E63;
   font-weight: 600;
 }
 
 .file-input:hover {
-  border-color: #FFB88C;
-  background: #FFF0DB;
+  border-color: #E91E63;
+  background: rgba(233, 30, 99, 0.1);
 }
 
 .image-preview-section {
@@ -119,7 +120,7 @@
 
 .image-preview-section h3 {
   font-size: 1rem;
-  color: #5C4742;
+  color: #333;
   margin-bottom: 12px;
   font-weight: 700;
 }
@@ -135,9 +136,9 @@
   aspect-ratio: 1;
   border-radius: 12px;
   overflow: hidden;
-  border: 3px solid #FFD4B3;
+  border: 2px solid rgba(233, 30, 99, 0.2);
   background: white;
-  box-shadow: 0 2px 6px rgba(92, 71, 66, 0.1);
+  box-shadow: 0 2px 6px rgba(233, 30, 99, 0.1);
 }
 
 .image-item img {
@@ -173,11 +174,11 @@
 
 .modal-footer {
   padding: 24px 28px;
-  border-top: 3px solid #FFE5CC;
+  border-top: 2px solid rgba(233, 30, 99, 0.1);
   display: flex;
   justify-content: flex-end;
   gap: 12px;
-  background: #FFFBF5;
+  background: rgba(233, 30, 99, 0.02);
 }
 
 .save-button,
@@ -192,25 +193,27 @@
 }
 
 .save-button {
-  background: linear-gradient(135deg, #FF9F7F 0%, #FFB88C 100%);
+  background: linear-gradient(135deg, #FF6B9D 0%, #E91E63 100%);
   color: white;
-  box-shadow: 0 4px 12px rgba(255, 159, 127, 0.4);
+  box-shadow: 0 2px 8px rgba(233, 30, 99, 0.3);
 }
 
 .save-button:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(255, 159, 127, 0.5);
+  box-shadow: 0 4px 12px rgba(233, 30, 99, 0.4);
+  background: linear-gradient(135deg, #E91E63 0%, #C2185B 100%);
 }
 
 .cancel-button {
   background: white;
-  color: #8B7355;
-  border: 2px solid #E5E5E5;
+  color: #666;
+  border: 2px solid rgba(233, 30, 99, 0.2);
 }
 
 .cancel-button:hover:not(:disabled) {
-  background: #F5F5F5;
-  border-color: #D0D0D0;
+  background: rgba(233, 30, 99, 0.05);
+  border-color: #E91E63;
+  color: #E91E63;
 }
 
 button:disabled {

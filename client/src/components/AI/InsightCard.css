@@ -1,0 +1,44 @@
+.insight-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  display: flex;
+  gap: 15px;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.insight-icon {
+  font-size: 40px;
+  flex-shrink: 0;
+}
+
+.insight-content {
+  flex: 1;
+}
+
+.insight-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.insight-message {
+  font-size: 14px;
+  opacity: 0.95;
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.insight-suggestions {
+  margin: 10px 0 0 0;
+  padding-left: 20px;
+  font-size: 13px;
+  opacity: 0.9;
+}
+
+.insight-suggestions li {
+  margin-bottom: 5px;
+}
+

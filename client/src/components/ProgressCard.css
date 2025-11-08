@@ -1,16 +1,17 @@
 .progress-card {
-  background: linear-gradient(135deg, #FFFBF5 0%, #FFF8E7 100%);
-  border: 3px solid #FFD4B3;
+  background: white;
+  border: 2px solid rgba(233, 30, 99, 0.2);
   border-radius: 16px;
   padding: 20px;
   position: relative;
   transition: all 0.2s;
-  box-shadow: 0 2px 8px rgba(92, 71, 66, 0.08);
+  box-shadow: 0 2px 8px rgba(233, 30, 99, 0.1);
 }
 
 .progress-card:hover {
-  box-shadow: 0 4px 12px rgba(92, 71, 66, 0.12);
+  box-shadow: 0 4px 12px rgba(233, 30, 99, 0.15);
   transform: translateY(-2px);
+  border-color: rgba(233, 30, 99, 0.4);
 }
 
 .progress-card-header {
@@ -24,7 +25,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  color: #8B7355;
+  color: #666;
   font-size: 0.9rem;
   font-weight: 600;
 }
@@ -38,10 +39,11 @@
   gap: 8px;
 }
 
+.share-btn,
 .edit-btn,
 .delete-btn {
   background: white;
-  border: 2px solid #FFD4B3;
+  border: 2px solid rgba(233, 30, 99, 0.2);
   width: 36px;
   height: 36px;
   border-radius: 10px;
@@ -53,15 +55,21 @@
   transition: all 0.2s;
 }
 
+.share-btn:hover {
+  background: rgba(233, 30, 99, 0.1);
+  border-color: #E91E63;
+  transform: scale(1.1);
+}
+
 .edit-btn:hover {
-  background: #E3F2FF;
-  border-color: #9DC3E6;
+  background: rgba(233, 30, 99, 0.1);
+  border-color: #FF6B9D;
   transform: scale(1.1);
 }
 
 .delete-btn:hover {
-  background: #FFE5E5;
-  border-color: #FFB8B8;
+  background: rgba(255, 107, 107, 0.1);
+  border-color: #FF6B6B;
   transform: scale(1.1);
 }
 
@@ -72,14 +80,14 @@
 }
 
 .progress-note {
-  background: white;
+  background: rgba(233, 30, 99, 0.02);
   padding: 16px;
   border-radius: 12px;
-  border: 2px solid #FFE5CC;
+  border: 2px solid rgba(233, 30, 99, 0.15);
 }
 
 .progress-note p {
-  color: #5C4742;
+  color: #333;
   line-height: 1.6;
   margin: 0;
   white-space: pre-wrap;
@@ -97,9 +105,9 @@
   aspect-ratio: 1;
   border-radius: 12px;
   overflow: hidden;
-  border: 3px solid #FFD4B3;
+  border: 2px solid rgba(233, 30, 99, 0.2);
   background: white;
-  box-shadow: 0 2px 6px rgba(92, 71, 66, 0.1);
+  box-shadow: 0 2px 6px rgba(233, 30, 99, 0.1);
   position: relative;
   cursor: pointer;
   transition: all 0.2s;
@@ -107,8 +115,8 @@
 
 .progress-image-item:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(92, 71, 66, 0.2);
-  border-color: #FFB88C;
+  box-shadow: 0 4px 12px rgba(233, 30, 99, 0.2);
+  border-color: #E91E63;
 }
 
 .progress-image-item img {
@@ -166,7 +174,7 @@
 }
 
 .delete-confirm-box p {
-  color: #5C4742;
+  color: #333;
   font-size: 1.1rem;
   font-weight: 600;
   margin-bottom: 20px;
@@ -190,13 +198,14 @@
 }
 
 .confirm-cancel-btn {
-  background: #E5E5E5;
-  color: #5C4742;
-  border: 2px solid #D0D0D0;
+  background: white;
+  color: #666;
+  border: 2px solid rgba(233, 30, 99, 0.2);
 }
 
 .confirm-cancel-btn:hover:not(:disabled) {
-  background: #D5D5D5;
+  background: rgba(233, 30, 99, 0.05);
+  border-color: #E91E63;
 }
 
 .confirm-delete-btn {
@@ -213,6 +222,34 @@
 button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.progress-collaboration {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 2px solid rgba(233, 30, 99, 0.15);
+}
+
+.collaboration-actions {
+  margin-top: 10px;
+}
+
+.comment-toggle-btn {
+  background: white;
+  border: 2px solid rgba(233, 30, 99, 0.2);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: #E91E63;
+  font-weight: 500;
+}
+
+.comment-toggle-btn:hover {
+  background: rgba(233, 30, 99, 0.1);
+  border-color: #E91E63;
+  transform: translateY(-1px);
 }
 
 @media (max-width: 768px) {

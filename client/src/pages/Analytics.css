@@ -1,0 +1,132 @@
+.analytics-page {
+  width: 100%;
+}
+
+.analytics-loading {
+  text-align: center;
+  padding: 100px 20px;
+  font-size: 18px;
+  color: #666;
+}
+
+.analytics-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding: 24px;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(233, 30, 99, 0.15),
+              0 0 0 2px rgba(233, 30, 99, 0.1);
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.analytics-title-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.analytics-title-section h1 {
+  margin: 0;
+  background: linear-gradient(135deg, #FF6B9D 0%, #E91E63 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.analytics-subtitle {
+  margin: 0;
+  color: #666;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.analytics-content {
+  width: 100%;
+}
+
+.analytics-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.analytics-controls label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  color: #E91E63;
+  font-size: 0.95rem;
+}
+
+.analytics-controls select {
+  padding: 12px 16px;
+  padding-right: 40px;
+  background: rgba(233, 30, 99, 0.05);
+  border: 2px solid rgba(233, 30, 99, 0.2);
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #E91E63;
+  box-shadow: 0 2px 8px rgba(233, 30, 99, 0.08);
+  transition: all 0.2s;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23E91E63' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 12px;
+}
+
+.analytics-controls select:hover {
+  border-color: rgba(233, 30, 99, 0.35);
+  background: rgba(233, 30, 99, 0.08);
+  box-shadow: 0 4px 12px rgba(233, 30, 99, 0.15);
+}
+
+.analytics-controls select:focus {
+  outline: none;
+  border-color: #E91E63;
+  box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.15);
+}
+
+.analytics-controls select option {
+  padding: 10px;
+  background: white;
+  color: #333;
+}
+
+.trend-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.analytics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 20px;
+}
+
+.analytics-section {
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .analytics-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .trend-cards {
+    grid-template-columns: 1fr;
+  }
+}
+

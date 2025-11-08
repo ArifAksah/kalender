@@ -1,0 +1,47 @@
+.reactions-container {
+  margin: 15px 0;
+}
+
+.reactions-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.reaction-button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  background: #f0f0f0;
+  border: 2px solid transparent;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 16px;
+}
+
+.reaction-button:hover {
+  background: #e0e0e0;
+  transform: scale(1.1);
+}
+
+.reaction-button.reaction-active {
+  background: #e8edff;
+  border-color: #667eea;
+}
+
+.reaction-emoji {
+  font-size: 18px;
+}
+
+.reaction-count {
+  font-size: 12px;
+  font-weight: 600;
+  color: #666;
+}
+
+.reaction-button.reaction-active .reaction-count {
+  color: #667eea;
+}
+

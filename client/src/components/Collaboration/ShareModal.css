@@ -1,0 +1,148 @@
+.share-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.share-modal {
+  background: white;
+  border-radius: 12px;
+  padding: 25px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.share-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.share-modal-header h3 {
+  margin: 0;
+  color: #333;
+  font-size: 20px;
+}
+
+.share-modal-close {
+  background: none;
+  border: none;
+  font-size: 28px;
+  color: #999;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.share-modal-close:hover {
+  color: #333;
+}
+
+.share-modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.share-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.share-form-group label {
+  font-weight: 500;
+  color: #333;
+  font-size: 14px;
+}
+
+.share-select {
+  padding: 10px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.share-select:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.share-form-group label input[type="checkbox"] {
+  margin-right: 8px;
+}
+
+.share-message {
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.share-message.success {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.share-message.error {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.share-modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.share-cancel,
+.share-submit {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.share-cancel {
+  background: #e0e0e0;
+  color: #333;
+}
+
+.share-cancel:hover {
+  background: #d0d0d0;
+}
+
+.share-submit {
+  background: #667eea;
+  color: white;
+}
+
+.share-submit:hover:not(:disabled) {
+  background: #5568d3;
+}
+
+.share-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+

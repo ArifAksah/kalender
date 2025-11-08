@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './Login.css';
+import '../styles/modernPage.css';
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -74,9 +75,13 @@ function Register() {
     <div className="login-container">
       <div className="login-card">
         <div className="login-header">
-          <div className="login-icon">✏️</div>
-          <h1 className="login-title">Progres Tracker</h1>
-          <p className="login-subtitle">Create your account</p>
+          <div className="avatar-circle">
+            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M20 20C23.3137 20 26 17.3137 26 14C26 10.6863 23.3137 8 20 8C16.6863 8 14 10.6863 14 14C14 17.3137 16.6863 20 20 20Z" fill="currentColor"/>
+              <path d="M20 22C14.4772 22 10 25.4772 10 31V32H30V31C30 25.4772 25.5228 22 20 22Z" fill="currentColor"/>
+            </svg>
+          </div>
+          <h1 className="login-title">Sign Up</h1>
         </div>
 
         <form onSubmit={handleSubmit} className="login-form">
@@ -113,67 +118,84 @@ function Register() {
           )}
 
           <div className="form-group">
-            <label htmlFor="username" className="form-label">
-              Username
-            </label>
-            <input
-              id="username"
-              name="username"
-              type="text"
-              value={formData.username}
-              onChange={handleChange}
-              placeholder="Choose a username"
-              className="form-input"
-              disabled={loading || success}
-            />
+            <div className="input-wrapper">
+              <div className="icon-capsule">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M10 10C11.3807 10 12.5 8.88071 12.5 7.5C12.5 6.11929 11.3807 5 10 5C8.61929 5 7.5 6.11929 7.5 7.5C7.5 8.88071 8.61929 10 10 10Z" fill="white"/>
+                  <path d="M10 11C7.23858 11 5 12.7386 5 15.5V16H15V15.5C15 12.7386 12.7614 11 10 11Z" fill="white"/>
+                </svg>
+              </div>
+              <input
+                id="username"
+                name="username"
+                type="text"
+                value={formData.username}
+                onChange={handleChange}
+                placeholder="Username"
+                className="form-input form-input-username"
+                disabled={loading || success}
+              />
+            </div>
           </div>
 
           <div className="form-group">
-            <label htmlFor="email" className="form-label">
-              Email
-            </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="Enter your email"
-              className="form-input"
-              disabled={loading || success}
-            />
+            <div className="input-wrapper">
+              <div className="icon-capsule">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M2.5 6.66667L10 11.6667L17.5 6.66667M3.33333 15H16.6667C17.5871 15 18.3333 14.2538 18.3333 13.3333V6.66667C18.3333 5.74619 17.5871 5 16.6667 5H3.33333C2.41286 5 1.66667 5.74619 1.66667 6.66667V13.3333C1.66667 14.2538 2.41286 15 3.33333 15Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="Email"
+                className="form-input form-input-username"
+                disabled={loading || success}
+              />
+            </div>
           </div>
 
           <div className="form-group">
-            <label htmlFor="password" className="form-label">
-              Password
-            </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="Min 8 chars, uppercase, lowercase, number"
-              className="form-input"
-              disabled={loading || success}
-            />
+            <div className="input-wrapper">
+              <div className="icon-capsule">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M5 9V7C5 4.23858 7.23858 2 10 2C12.7614 2 15 4.23858 15 7V9M5 9H15M5 9H4C3.44772 9 3 9.44772 3 10V16C3 16.5523 3.44772 17 4 17H16C16.5523 17 17 16.5523 17 16V10C17 9.44772 16.5523 9 16 9H15" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Password"
+                className="form-input form-input-password"
+                disabled={loading || success}
+              />
+            </div>
           </div>
 
           <div className="form-group">
-            <label htmlFor="confirmPassword" className="form-label">
-              Confirm Password
-            </label>
-            <input
-              id="confirmPassword"
-              name="confirmPassword"
-              type="password"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              placeholder="Confirm your password"
-              className="form-input"
-              disabled={loading || success}
-            />
+            <div className="input-wrapper">
+              <div className="icon-capsule">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M5 9V7C5 4.23858 7.23858 2 10 2C12.7614 2 15 4.23858 15 7V9M5 9H15M5 9H4C3.44772 9 3 9.44772 3 10V16C3 16.5523 3.44772 17 4 17H16C16.5523 17 17 16.5523 17 16V10C17 9.44772 16.5523 9 16 9H15" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              <input
+                id="confirmPassword"
+                name="confirmPassword"
+                type="password"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                placeholder="Confirm Password"
+                className="form-input form-input-password"
+                disabled={loading || success}
+              />
+            </div>
           </div>
 
           <button
@@ -181,15 +203,17 @@ function Register() {
             className="login-button"
             disabled={loading || success}
           >
-            {loading ? 'Creating account...' : success ? 'Redirecting to login...' : 'Create Account'}
+            <span style={{ opacity: loading || success ? 0 : 1, transition: 'opacity 0.3s' }}>
+              SIGN UP
+            </span>
           </button>
         </form>
 
         <div className="login-footer">
           <p className="register-link">
-            Already have an account?{' '}
-            <Link to="/login" className="link">
-              Sign in here
+            Already have account?{' '}
+            <Link to="/login" className="signup-link">
+              Sign in!
             </Link>
           </p>
         </div>
