@@ -2,7 +2,7 @@ import React from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 import './CategoryBreakdown.css';
 
-const COLORS = ['#667eea', '#764ba2', '#f093fb', '#4facfe', '#43e97b', '#fa709a', '#fee140', '#30cfd0'];
+const COLORS = ['#6366f1', '#818cf8', '#4f46e5', '#a5b4fc', '#3730a3', '#c7d2fe', '#312e81', '#e0e7ff'];
 
 function CategoryBreakdown({ data }) {
   if (!data || data.length === 0) {

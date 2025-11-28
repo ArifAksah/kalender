@@ -102,16 +102,16 @@ export const updateProfile = async (data) => {
   try {
     // If data contains File/Blob, use FormData, otherwise use JSON
     const isFormData = data instanceof FormData || (data.photo && data.photo instanceof File);
-    
-    const headers = isFormData 
+
+    const headers = isFormData
       ? {
-          'Content-Type': 'multipart/form-data',
-          ...getAuthHeader()
-        }
+        'Content-Type': 'multipart/form-data',
+        ...getAuthHeader()
+      }
       : {
-          'Content-Type': 'application/json',
-          ...getAuthHeader()
-        };
+        'Content-Type': 'application/json',
+        ...getAuthHeader()
+      };
 
     const body = isFormData ? data : JSON.stringify(data);
 
@@ -464,6 +464,42 @@ export const deleteTodo = async (id) => {
     return response.data;
   } catch (error) {
     console.error('Error deleting todo:', error);
+    throw error;
+  }
+};
+
+export const getDashboardData = async () => {
+  try {
+    const [todos, progress] = await Promise.all([
+      getAllTodos(),
+      getAllProgress()
+    ]);
+
+    const totalTasks = todos.length;
+    const completedTasks = todos.filter(t => t.status === 'completed').length;
+    const pendingTasks = todos.filter(t => t.status !== 'completed').length;
+
+    // Calculate streak (mock logic for now, or based on progress dates)
+    // This is a simple calculation, real streak logic might be more complex
+    // Calculate streak (mock logic for now, or based on progress dates)
+    // This is a simple calculation, real streak logic might be more complex
+    const progressDates = progress.map(p => p.tanggal).sort().reverse();
+    let streak = 0;
+    // ... simple streak calculation ...
+    if (progressDates.length > 0) streak = 1; // Mock streak for now
+
+    // Calculate weekly progress (last 7 days)
+    // ... populate based on progress ...
+
+    return {
+      totalTasks,
+      completedTasks,
+      pendingTasks,
+      streak,
+      weeklyProgress: [2, 4, 1, 5, 3, 6, 8] // Mock weekly data for visual
+    };
+  } catch (error) {
+    console.error('Error fetching dashboard data:', error);
     throw error;
   }
 };

@@ -1,397 +1,236 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Navbar from '../components/Navbar/Navbar';
-import Footer from '../components/Footer/Footer';
 import { useAuth } from '../context/AuthContext';
-import { getProfile, updateProfile } from '../services/api';
-import { getAllProgress } from '../services/api';
+import { getProfile, updateProfile, getAllProgress } from '../services/api';
 import { exportToPDF, exportToExcel } from '../utils/export';
 import { compressImage } from '../utils/imageOptimization';
 import { uploadProfilePhoto, deleteProfilePhoto } from '../utils/supabaseStorage';
-import '../styles/pageWrapper.css';
-import './Settings.css';
+import Card from '../components/Card';
+import Button from '../components/Button';
 
 function Settings() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
-  const [activeTab, setActiveTab] = useState('general');
+  const [tab, setTab] = useState('general');
   const [profile, setProfile] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState('');
-  const [photoPreview, setPhotoPreview] = useState(null);
-  const [uploadingPhoto, setUploadingPhoto] = useState(false);
-  const fileInputRef = useRef(null);
+  const [photo, setPhoto] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [msg, setMsg] = useState('');
+  const fileRef = useRef(null);
 
   useEffect(() => {
-    loadProfile();
+    const load = async () => {
+      try {
+        const data = await getProfile();
+        setProfile(data);
+        if (data?.avatar_url) setPhoto(data.avatar_url);
+      } catch (err) {
+        console.error('Error loading profile:', err);
+      }
+    };
+    load();
   }, []);
 
   useEffect(() => {
-    if (profile?.avatar_url) {
-      setPhotoPreview(profile.avatar_url);
-    } else if (user?.avatar_url) {
-      setPhotoPreview(user.avatar_url);
-    }
+    if (profile?.avatar_url) setPhoto(profile.avatar_url);
+    else if (user?.avatar_url) setPhoto(user.avatar_url);
   }, [profile, user]);
 
-  const loadProfile = async () => {
-    try {
-      const data = await getProfile();
-      setProfile(data);
-      if (data?.avatar_url) {
-        setPhotoPreview(data.avatar_url);
-      }
-    } catch (error) {
-      console.error('Error loading profile:', error);
-    }
+  const showMsg = (text) => {
+    setMsg(text);
+    setTimeout(() => setMsg(''), 3000);
   };
 
   const handlePhotoChange = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
-    // Validate file type
-    if (!file.type.startsWith('image/')) {
-      setMessage('Please select an image file');
-      setTimeout(() => setMessage(''), 3000);
-      return;
-    }
-
-    // Validate file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      setMessage('Image size must be less than 5MB');
-      setTimeout(() => setMessage(''), 3000);
-      return;
-    }
+    if (!file.type.startsWith('image/')) return showMsg('Please select an image');
+    if (file.size > 5 * 1024 * 1024) return showMsg('Max file size is 5MB');
 
     try {
-      setUploadingPhoto(true);
+      setUploading(true);
+      const compressed = await compressImage(file, { maxWidth: 400, maxHeight: 400, quality: 0.9 });
+      const ext = file.name.split('.').pop() || 'jpg';
+      const newFile = new File([compressed], `profile.${ext}`, { type: compressed.type || 'image/jpeg' });
       
-      // Compress image
-      const compressedBlob = await compressImage(file, {
-        maxWidth: 400,
-        maxHeight: 400,
-        quality: 0.9
-      });
-
-      // Create File object from blob with proper name and type
-      const fileExt = file.name.split('.').pop() || 'jpg';
-      const fileName = `profile-photo.${fileExt}`;
-      const compressedFile = new File([compressedBlob], fileName, {
-        type: compressedBlob.type || file.type || 'image/jpeg',
-        lastModified: Date.now()
-      });
-
-      // Create preview
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setPhotoPreview(reader.result);
-      };
-      reader.readAsDataURL(compressedBlob);
+      reader.onloadend = () => setPhoto(reader.result);
+      reader.readAsDataURL(compressed);
 
-      // Upload to Supabase Storage
-      const photoUrl = await uploadProfilePhoto(compressedFile, user?.id || 'user');
-
-      // Update profile with photo URL
-      const updatedProfile = await updateProfile({ photo: photoUrl });
-      setProfile(updatedProfile);
+      const url = await uploadProfilePhoto(newFile, user?.id || 'user');
+      await updateProfile({ photo: url });
       
-      // Update localStorage user data
-      const savedUser = localStorage.getItem('user');
-      if (savedUser) {
-        const userData = JSON.parse(savedUser);
-        userData.avatar_url = photoUrl;
-        localStorage.setItem('user', JSON.stringify(userData));
+      const saved = localStorage.getItem('user');
+      if (saved) {
+        const data = JSON.parse(saved);
+        data.avatar_url = url;
+        localStorage.setItem('user', JSON.stringify(data));
       }
-
-      // Dispatch custom event to update navbar
-      window.dispatchEvent(new CustomEvent('profileUpdated', { 
-        detail: { avatar_url: photoUrl } 
-      }));
-
-      setMessage('Profile photo updated successfully!');
-      setTimeout(() => setMessage(''), 3000);
-    } catch (error) {
-      console.error('Error uploading photo:', error);
-      setMessage(error.message || 'Failed to upload profile photo');
-      setTimeout(() => setMessage(''), 3000);
+      window.dispatchEvent(new CustomEvent('profileUpdated', { detail: { avatar_url: url } }));
+      showMsg('Photo updated');
+    } catch (err) {
+      showMsg(err.message || 'Failed to upload');
     } finally {
-      setUploadingPhoto(false);
+      setUploading(false);
     }
   };
 
   const handleRemovePhoto = async () => {
-    if (!window.confirm('Are you sure you want to remove your profile photo?')) {
-      return;
-    }
-
+    if (!window.confirm('Remove profile photo?')) return;
     try {
-      setUploadingPhoto(true);
-
-      // Delete old photo from Supabase Storage if exists
-      const oldPhotoUrl = profile?.avatar_url || user?.avatar_url;
-      if (oldPhotoUrl) {
-        await deleteProfilePhoto(oldPhotoUrl);
+      setUploading(true);
+      if (profile?.avatar_url) await deleteProfilePhoto(profile.avatar_url);
+      await updateProfile({ photo: null });
+      setPhoto(null);
+      
+      const saved = localStorage.getItem('user');
+      if (saved) {
+        const data = JSON.parse(saved);
+        data.avatar_url = null;
+        localStorage.setItem('user', JSON.stringify(data));
       }
-
-      // Update profile to remove photo URL
-      const updatedProfile = await updateProfile({ photo: null });
-      setProfile(updatedProfile);
-      setPhotoPreview(null);
-
-      // Update localStorage user data
-      const savedUser = localStorage.getItem('user');
-      if (savedUser) {
-        const userData = JSON.parse(savedUser);
-        userData.avatar_url = null;
-        localStorage.setItem('user', JSON.stringify(userData));
-      }
-
-      // Dispatch custom event to update navbar
-      window.dispatchEvent(new CustomEvent('profileUpdated', { 
-        detail: { avatar_url: null } 
-      }));
-
-      setMessage('Profile photo removed successfully!');
-      setTimeout(() => setMessage(''), 3000);
-    } catch (error) {
-      console.error('Error removing photo:', error);
-      setMessage(error.message || 'Failed to remove profile photo');
-      setTimeout(() => setMessage(''), 3000);
+      window.dispatchEvent(new CustomEvent('profileUpdated', { detail: { avatar_url: null } }));
+      showMsg('Photo removed');
+    } catch (err) {
+      showMsg('Failed to remove');
     } finally {
-      setUploadingPhoto(false);
+      setUploading(false);
     }
   };
 
-  const handleExportData = async (format) => {
+  const handleExport = async (format) => {
     try {
-      setLoading(true);
-      const progressData = await getAllProgress();
-      
-      if (format === 'pdf') {
-        await exportToPDF(progressData, 'Progress Export');
-      } else if (format === 'excel') {
-        await exportToExcel(progressData, 'Progress Export');
-      } else if (format === 'json') {
-        const dataStr = JSON.stringify(progressData, null, 2);
-        const dataBlob = new Blob([dataStr], { type: 'application/json' });
-        const url = URL.createObjectURL(dataBlob);
+      const data = await getAllProgress();
+      if (format === 'pdf') await exportToPDF(data, 'Progress Export');
+      else if (format === 'excel') await exportToExcel(data, 'Progress Export');
+      else if (format === 'json') {
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
         const link = document.createElement('a');
-        link.href = url;
-        link.download = `progress-export-${new Date().toISOString().split('T')[0]}.json`;
+        link.href = URL.createObjectURL(blob);
+        link.download = `progress-${new Date().toISOString().split('T')[0]}.json`;
         link.click();
-        URL.revokeObjectURL(url);
       }
-      
-      setMessage('Data exported successfully!');
-      setTimeout(() => setMessage(''), 3000);
-    } catch (error) {
-      console.error('Export error:', error);
-      setMessage('Failed to export data');
-    } finally {
-      setLoading(false);
+      showMsg('Exported!');
+    } catch {
+      showMsg('Export failed');
     }
   };
 
-  const handleDeleteAccount = async () => {
-    if (!window.confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
-      return;
-    }
-
-    if (!window.confirm('This will permanently delete all your data. Type DELETE to confirm.')) {
-      return;
-    }
-
-    // In a real app, you'd call an API endpoint to delete the account
-    alert('Account deletion feature requires backend implementation');
-  };
+  const tabs = [
+    { id: 'general', label: 'General' },
+    { id: 'data', label: 'Data & Privacy' },
+    { id: 'account', label: 'Account' },
+  ];
 
   return (
-    <div className="page-wrapper">
-      <Navbar />
-      <main className="page-main">
-        <div className="settings-page">
-          <header className="settings-header">
-      
-          </header>
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold text-blue-900">Settings</h1>
+        <p className="text-blue-600 text-sm mt-1">Manage your preferences</p>
+      </div>
 
-          <div className="settings-content">
-            <div className="settings-tabs">
+      <div className="flex flex-col lg:flex-row gap-6">
+        {/* Tabs */}
+        <Card className="lg:w-56 p-2 h-fit">
+          <nav className="space-y-1">
+            {tabs.map((t) => (
               <button
-                className={`settings-tab ${activeTab === 'general' ? 'active' : ''}`}
-                onClick={() => setActiveTab('general')}
+                key={t.id}
+                onClick={() => setTab(t.id)}
+                className={`w-full px-3 py-2 text-left text-sm rounded-lg transition-colors ${tab === t.id ? 'bg-blue-100 text-blue-700' : 'text-blue-600 hover:bg-blue-50'}`}
               >
-                General
+                {t.label}
               </button>
-              <button
-                className={`settings-tab ${activeTab === 'appearance' ? 'active' : ''}`}
-                onClick={() => setActiveTab('appearance')}
-              >
-                Appearance
-              </button>
-              <button
-                className={`settings-tab ${activeTab === 'data' ? 'active' : ''}`}
-                onClick={() => setActiveTab('data')}
-              >
-                Data & Privacy
-              </button>
-              <button
-                className={`settings-tab ${activeTab === 'account' ? 'active' : ''}`}
-                onClick={() => setActiveTab('account')}
-              >
-                Account
-              </button>
+            ))}
+          </nav>
+        </Card>
+
+        {/* Content */}
+        <Card className="flex-1 p-6">
+          {msg && (
+            <div className={`mb-4 p-3 rounded-lg text-sm ${msg.includes('failed') || msg.includes('Failed') ? 'bg-red-50 text-red-600' : 'bg-emerald-50 text-emerald-600'}`}>
+              {msg}
             </div>
+          )}
 
-            <div className="settings-panel">
-              {message && (
-                <div className={`settings-message ${message.includes('success') ? 'success' : 'error'}`}>
-                  {message}
-                </div>
-              )}
-
-              {activeTab === 'general' && (
-                <div className="settings-section">
-                  <h2>General Settings</h2>
-                  
-                  {/* Profile Photo Section */}
-                  <div className="settings-item">
-                    <label>Profile Photo</label>
-                    <div className="profile-photo-container">
-                      <div className="profile-photo-preview">
-                        {photoPreview ? (
-                          <img src={photoPreview} alt="Profile" />
-                        ) : (
-                          <div className="profile-photo-placeholder">
-                            {user?.username?.charAt(0).toUpperCase() || 'U'}
-                          </div>
-                        )}
-                        {uploadingPhoto && (
-                          <div className="photo-upload-overlay">
-                            <div className="photo-upload-spinner"></div>
-                          </div>
-                        )}
-                      </div>
-                      <div className="profile-photo-actions">
-                        <input
-                          ref={fileInputRef}
-                          type="file"
-                          accept="image/*"
-                          onChange={handlePhotoChange}
-                          style={{ display: 'none' }}
-                          disabled={uploadingPhoto}
-                        />
-                        <button
-                          type="button"
-                          onClick={() => fileInputRef.current?.click()}
-                          disabled={uploadingPhoto}
-                          className="photo-upload-button"
-                        >
-                          {photoPreview ? 'Change Photo' : 'Upload Photo'}
-                        </button>
-                        {photoPreview && (
-                          <button
-                            type="button"
-                            onClick={handleRemovePhoto}
-                            disabled={uploadingPhoto}
-                            className="photo-remove-button"
-                          >
-                            Remove Photo
-                          </button>
-                        )}
-                      </div>
-                      <small>Recommended size: 400x400px. Max file size: 5MB</small>
+          {tab === 'general' && (
+            <div className="space-y-6">
+              <h2 className="text-lg font-semibold text-blue-900 border-b border-blue-100 pb-3">General Settings</h2>
+              
+              {/* Photo */}
+              <div className="flex items-center gap-6">
+                <div className="relative w-20 h-20 rounded-full overflow-hidden bg-blue-100 shadow-inner">
+                  {photo ? (
+                    <img src={photo} alt="Profile" className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-2xl font-bold text-blue-400">
+                      {user?.username?.[0]?.toUpperCase() || 'U'}
                     </div>
-                  </div>
-
-                  <div className="settings-item">
-                    <label>Username</label>
-                    <input type="text" value={user?.username || ''} disabled />
-                    <small>Username cannot be changed</small>
-                  </div>
-                  <div className="settings-item">
-                    <label>Email</label>
-                    <input type="email" value={user?.email || ''} disabled />
-                    <small>Email cannot be changed</small>
-                  </div>
-                  <div className="settings-item">
-                    <label>Timezone</label>
-                    <select defaultValue={profile?.timezone || 'UTC'}>
-                      <option value="UTC">UTC</option>
-                      <option value="America/New_York">Eastern Time</option>
-                      <option value="America/Chicago">Central Time</option>
-                      <option value="America/Los_Angeles">Pacific Time</option>
-                    </select>
-                  </div>
+                  )}
+                  {uploading && <div className="absolute inset-0 bg-white/70 flex items-center justify-center"><div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" /></div>}
                 </div>
-              )}
-
-              {activeTab === 'appearance' && (
-                <div className="settings-section">
-                  <h2>Appearance</h2>
-                  <p className="settings-description">Theme customization has been removed for simplicity.</p>
+                <div className="space-y-2">
+                  <input ref={fileRef} type="file" accept="image/*" onChange={handlePhotoChange} className="hidden" />
+                  <div className="flex gap-2">
+                    <Button variant="secondary" size="sm" onClick={() => fileRef.current?.click()} disabled={uploading}>
+                      {photo ? 'Change' : 'Upload'}
+                    </Button>
+                    {photo && <Button variant="danger" size="sm" onClick={handleRemovePhoto} disabled={uploading}>Remove</Button>}
+                  </div>
+                  <p className="text-xs text-blue-400">Max 5MB</p>
                 </div>
-              )}
+              </div>
 
-              {activeTab === 'data' && (
-                <div className="settings-section">
-                  <h2>Data & Privacy</h2>
-                  <div className="settings-item">
-                    <h3>Export Data</h3>
-                    <p>Download all your progress data</p>
-                    <div className="export-buttons">
-                      <button onClick={() => handleExportData('pdf')} disabled={loading}>
-                        Export as PDF
-                      </button>
-                      <button onClick={() => handleExportData('excel')} disabled={loading}>
-                        Export as Excel
-                      </button>
-                      <button onClick={() => handleExportData('json')} disabled={loading}>
-                        Export as JSON
-                      </button>
-                    </div>
-                  </div>
-                  <div className="settings-item">
-                    <h3>Privacy</h3>
-                    <label>
-                      <input type="checkbox" defaultChecked />
-                      Make profile visible to other users
-                    </label>
-                  </div>
+              {/* Info */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm text-blue-600 mb-1">Username</label>
+                  <input type="text" value={user?.username || ''} disabled className="w-full bg-blue-50 border border-blue-100 rounded-lg px-3 py-2 text-blue-400 text-sm" />
                 </div>
-              )}
-
-              {activeTab === 'account' && (
-                <div className="settings-section">
-                  <h2>Account Management</h2>
-                  <div className="settings-item">
-                    <h3>Change Password</h3>
-                    <button onClick={() => navigate('/forgot-password')}>
-                      Reset Password
-                    </button>
-                  </div>
-                  <div className="settings-item">
-                    <h3>Danger Zone</h3>
-                    <button onClick={handleDeleteAccount} className="danger-button">
-                      Delete Account
-                    </button>
-                    <small>This action cannot be undone</small>
-                  </div>
-                  <div className="settings-item">
-                    <button onClick={logout} className="logout-button">
-                      Logout
-                    </button>
-                  </div>
+                <div>
+                  <label className="block text-sm text-blue-600 mb-1">Email</label>
+                  <input type="email" value={user?.email || ''} disabled className="w-full bg-blue-50 border border-blue-100 rounded-lg px-3 py-2 text-blue-400 text-sm" />
                 </div>
-              )}
+              </div>
             </div>
-          </div>
-        </div>
-      </main>
-      <Footer />
+          )}
+
+          {tab === 'data' && (
+            <div className="space-y-6">
+              <h2 className="text-lg font-semibold text-blue-900 border-b border-blue-100 pb-3">Data & Privacy</h2>
+              <div>
+                <h3 className="text-sm font-medium text-blue-900 mb-2">Export Data</h3>
+                <p className="text-blue-500 text-sm mb-3">Download your progress data</p>
+                <div className="flex flex-wrap gap-2">
+                  <Button variant="secondary" size="sm" onClick={() => handleExport('pdf')}>PDF</Button>
+                  <Button variant="secondary" size="sm" onClick={() => handleExport('excel')}>Excel</Button>
+                  <Button variant="secondary" size="sm" onClick={() => handleExport('json')}>JSON</Button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {tab === 'account' && (
+            <div className="space-y-6">
+              <h2 className="text-lg font-semibold text-blue-900 border-b border-blue-100 pb-3">Account</h2>
+              <div>
+                <h3 className="text-sm font-medium text-blue-900 mb-2">Password</h3>
+                <Button variant="secondary" size="sm" onClick={() => navigate('/forgot-password')}>Reset Password</Button>
+              </div>
+              <div className="pt-4 border-t border-blue-100">
+                <h3 className="text-sm font-medium text-red-500 mb-2">Danger Zone</h3>
+                <p className="text-blue-500 text-sm mb-3">Permanently delete your account</p>
+                <Button variant="danger" size="sm" onClick={() => alert('Feature requires backend')}>Delete Account</Button>
+              </div>
+              <div className="pt-4 border-t border-blue-100">
+                <Button variant="secondary" className="w-full" onClick={logout}>Logout</Button>
+              </div>
+            </div>
+          )}
+        </Card>
+      </div>
     </div>
   );
 }
 
 export default Settings;
-

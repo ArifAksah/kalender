@@ -21,8 +21,8 @@ function ProgressChart({ data, type = 'line', title }) {
       <ResponsiveContainer width="100%" height={300}>
         <ChartComponent data={data}>
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis 
-            dataKey="period" 
+          <XAxis
+            dataKey="period"
             tick={{ fontSize: 12 }}
             angle={-45}
             textAnchor="end"
@@ -31,11 +31,11 @@ function ProgressChart({ data, type = 'line', title }) {
           <YAxis tick={{ fontSize: 12 }} />
           <Tooltip />
           <Legend />
-          <DataComponent 
-            type="monotone" 
-            dataKey="count" 
-            stroke="#667eea" 
-            fill="#667eea"
+          <DataComponent
+            type="monotone"
+            dataKey="count"
+            stroke="#6366f1"
+            fill="#6366f1"
             name="Progress Entries"
           />
         </ChartComponent>

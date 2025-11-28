@@ -10,9 +10,42 @@
   align-items: center;
   margin-bottom: 16px;
   padding: 16px;
-  background: rgba(var(--primary-rgb), 0.05);
+  background: #eff6ff;
   border-radius: 12px;
-  border: 2px solid rgba(var(--primary-rgb), 0.1);
+  border: 2px solid #bfdbfe;
+}
+
+.stat-item {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.stat-label {
+  font-weight: 600;
+  color: #64748b;
+}
+
+.stat-value {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #1e40af;
+}
+
+.reset-button {
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.reset-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
 .game-message {
@@ -25,13 +58,15 @@
 }
 
 .game-over {
-  background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%);
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
   color: white;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
 }
 
 .game-won {
-  background: linear-gradient(135deg, #44ff44 0%, #00cc00 100%);
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: white;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
 }
 
 @keyframes messageAppear {
@@ -44,9 +79,9 @@
   grid-template-columns: repeat(4, 1fr);
   gap: 12px;
   padding: 16px;
-  background: rgba(var(--primary-rgb), 0.1);
+  background: #f0f9ff;
   border-radius: 16px;
-  border: 3px solid rgba(var(--primary-rgb), 0.2);
+  border: 3px solid #bfdbfe;
   margin-bottom: 16px;
 }
 
@@ -59,6 +94,8 @@
   font-weight: 700;
   border-radius: 8px;
   transition: all 0.15s ease-in-out;
+  background: #e2e8f0;
+  color: #1e40af;
 }
 
 .puzzle-tile.filled {
@@ -81,7 +118,7 @@
 
 .game-controls {
   text-align: center;
-  color: #666;
+  color: #64748b;
   font-size: 0.9rem;
   margin-top: 8px;
 }

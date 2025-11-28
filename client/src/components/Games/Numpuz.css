@@ -18,42 +18,42 @@
 .mode-btn {
   padding: 10px 20px;
   background: white;
-  border: 2px solid rgba(var(--primary-rgb), 0.2);
+  border: 2px solid #bfdbfe;
   border-radius: 10px;
   font-weight: 600;
   font-size: 0.95rem;
   cursor: pointer;
   transition: all 0.2s;
-  color: #666;
+  color: #1e40af;
 }
 
 .mode-btn:hover {
-  border-color: var(--primary);
-  background: rgba(var(--primary-rgb), 0.05);
+  border-color: #3b82f6;
+  background: #eff6ff;
 }
 
 .mode-btn.active {
-  background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+  background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
   color: white;
-  border-color: var(--primary);
-  box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.3);
+  border-color: #3b82f6;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
 .change-img-btn {
   padding: 10px 20px;
-  background: rgba(var(--primary-rgb), 0.1);
-  border: 2px solid rgba(var(--primary-rgb), 0.2);
+  background: #eff6ff;
+  border: 2px solid #bfdbfe;
   border-radius: 10px;
   font-weight: 600;
   font-size: 0.95rem;
   cursor: pointer;
   transition: all 0.2s;
-  color: var(--primary);
+  color: #3b82f6;
 }
 
 .change-img-btn:hover {
-  background: rgba(var(--primary-rgb), 0.15);
-  border-color: var(--primary);
+  background: #dbeafe;
+  border-color: #3b82f6;
 }
 
 .numpuz-stats {
@@ -62,9 +62,9 @@
   align-items: center;
   margin-bottom: 16px;
   padding: 16px;
-  background: rgba(var(--primary-rgb), 0.05);
+  background: #eff6ff;
   border-radius: 12px;
-  border: 2px solid rgba(var(--primary-rgb), 0.1);
+  border: 2px solid #bfdbfe;
 }
 
 .stat-group {
@@ -80,19 +80,19 @@
 
 .stat-label {
   font-weight: 600;
-  color: #666;
+  color: #64748b;
 }
 
 .stat-value {
   font-size: 1.3rem;
   font-weight: 700;
-  color: var(--primary);
+  color: #1e40af;
   min-width: 50px;
 }
 
 .reset-button {
   padding: 10px 20px;
-  background: var(--primary);
+  background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
   color: white;
   border: none;
   border-radius: 10px;
@@ -103,12 +103,12 @@
 
 .reset-button:hover {
   transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.3);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
 .win-message {
   padding: 20px;
-  background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: white;
   border-radius: 12px;
   text-align: center;
@@ -116,6 +116,7 @@
   font-weight: 700;
   margin-bottom: 16px;
   animation: celebrate 0.5s ease-out;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
 }
 
 @keyframes celebrate {
@@ -126,13 +127,14 @@
 
 .game-hint {
   padding: 12px;
-  background: rgba(var(--primary-rgb), 0.1);
-  color: var(--primary);
+  background: #fef3c7;
+  color: #92400e;
   border-radius: 8px;
   text-align: center;
   font-size: 0.9rem;
   font-weight: 600;
   margin-bottom: 16px;
+  border: 1px solid #fcd34d;
 }
 
 .numpuz-board {
@@ -140,8 +142,8 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 8px;
   padding: 8px;
-  background: rgba(var(--primary-rgb), 0.05);
-  border: 3px solid rgba(var(--primary-rgb), 0.2);
+  background: #f0f9ff;
+  border: 3px solid #bfdbfe;
   border-radius: 16px;
   margin-bottom: 16px;
   width: 316px;
@@ -159,7 +161,7 @@
   font-size: 2.5rem;
   font-weight: 700;
   background: white;
-  border: 3px solid rgba(var(--primary-rgb), 0.2);
+  border: 3px solid #e0e7ff;
   border-radius: 12px;
   transition: all 0.15s ease;
   user-select: none;
@@ -167,23 +169,24 @@
   background-repeat: no-repeat;
   position: relative;
   overflow: hidden;
+  color: #1e40af;
 }
 
 .numpuz-tile.empty {
   background: transparent;
-  border: 3px dashed rgba(var(--primary-rgb), 0.15);
+  border: 3px dashed #cbd5e1;
   cursor: default;
 }
 
 .numpuz-tile.moveable {
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(var(--primary-rgb), 0.2);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
 }
 
 .numpuz-tile.moveable:hover {
   transform: scale(1.05);
-  box-shadow: 0 4px 16px rgba(var(--primary-rgb), 0.4);
-  border-color: var(--primary);
+  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.4);
+  border-color: #3b82f6;
   z-index: 10;
 }
 
@@ -192,29 +195,9 @@
   cursor: not-allowed;
 }
 
-/* Number mode specific */
-.numpuz-tile:not(.empty):not([style*="background-image"]) {
-  background: white;
-  color: #333;
-  font-weight: 700;
-  border: 2px solid #e0e0e0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.numpuz-tile.moveable:not([style*="background-image"]) {
-  background: white;
-  color: #333;
-  border: 2px solid #e0e0e0;
-}
-
-.numpuz-tile.moveable:not([style*="background-image"]):hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-  transform: scale(1.05);
-}
-
 .game-controls {
   text-align: center;
-  color: #666;
+  color: #64748b;
   font-size: 0.9rem;
   margin-top: 8px;
   line-height: 1.5;

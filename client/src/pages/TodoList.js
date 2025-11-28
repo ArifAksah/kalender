@@ -1,377 +1,258 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import Navbar from '../components/Navbar/Navbar';
-import Footer from '../components/Footer/Footer';
+import React, { useState, useEffect, useCallback } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { getAllTodos, createTodo, updateTodo, deleteTodo } from '../services/api';
-import '../styles/pageWrapper.css';
-import './TodoList.css';
+import { getTodos, addTodo, updateTodo, deleteTodo } from '../services/todoService';
+import { useAuth } from '../context/AuthContext';
+import Card from '../components/Card';
+import Button from '../components/Button';
+import LoadingSpinner from '../components/LoadingSpinner';
+import Icon from '../components/Icons';
 
 function TodoList() {
-  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
-  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [newTask, setNewTask] = useState({ title: '', description: '', dueDate: '' });
-  
-  const [tasks, setTasks] = useState({
-    upcoming: [],
-    ongoing: [],
-    completed: []
-  });
+  const { user } = useAuth();
+  const [tasks, setTasks] = useState({ upcoming: [], ongoing: [], completed: [] });
   const [loading, setLoading] = useState(true);
-  const [notification, setNotification] = useState({ show: false, message: '', type: '' });
+  const [showModal, setShowModal] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [newTask, setNewTask] = useState({ title: '', description: '', dueDate: new Date().toISOString().split('T')[0] });
+  const [toast, setToast] = useState(null);
 
-  // Load tasks from API
-  useEffect(() => {
-    loadTasks();
+  const showToast = useCallback((msg, type = 'success') => {
+    setToast({ msg, type });
+    setTimeout(() => setToast(null), 3000);
   }, []);
 
-  const loadTasks = async () => {
+  const loadTasks = useCallback(async () => {
+    if (!user?.id) {
+      setLoading(false);
+      return;
+    }
+    
     try {
       setLoading(true);
-      const data = await getAllTodos();
-      
-      // Group tasks by status
-      const grouped = {
-        upcoming: data.filter(task => task.status === 'upcoming'),
-        ongoing: data.filter(task => task.status === 'ongoing'),
-        completed: data.filter(task => task.status === 'completed')
-      };
-      
-      setTasks(grouped);
-    } catch (error) {
-      console.error('Error loading tasks:', error);
+      const data = await getTodos(user.id);
+      setTasks({
+        upcoming: data.filter(t => t.status === 'upcoming' || t.status === 'pending'),
+        ongoing: data.filter(t => t.status === 'ongoing'),
+        completed: data.filter(t => t.status === 'completed')
+      });
+    } catch (err) {
+      console.error('Error loading tasks:', err);
+      showToast('Failed to load tasks', 'error');
     } finally {
       setLoading(false);
     }
-  };
+  }, [user?.id, showToast]);
 
-  // Filter tasks by current month
-  const filterTasksByMonth = (taskList) => {
-    return taskList.filter(task => {
-      const taskDate = new Date(task.created_at);
-      return taskDate.getMonth() === currentMonth && taskDate.getFullYear() === currentYear;
-    });
-  };
-
-  const monthName = new Date(currentYear, currentMonth).toLocaleString('default', { month: 'long', year: 'numeric' });
-
-  const normalizeDateInput = (value) => {
-    if (!value) return '';
-    if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value)) return value;
-    const d = new Date(value);
-    if (isNaN(d)) return '';
-    return d.toISOString().slice(0, 10);
-  };
-
-  const formatDisplayDate = (value) => {
-    if (!value) return '';
-    if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value)) {
-      const [y, m, day] = value.split('-').map(Number);
-      const utc = new Date(Date.UTC(y, m - 1, day));
-      return utc.toLocaleDateString('id-ID');
-    }
-    const d = new Date(value);
-    if (isNaN(d)) return '';
-    return d.toLocaleDateString('id-ID');
-  };
-
-  const monthOptions = useMemo(() => (
-    Array.from({ length: 12 }, (_, i) => ({
-      value: i,
-      label: new Date(2000, i).toLocaleString('default', { month: 'long' })
-    }))
-  ), []);
-
-  const yearOptions = useMemo(() => {
-    const all = [...(tasks.upcoming || []), ...(tasks.ongoing || []), ...(tasks.completed || [])];
-    const years = new Set(all.map(t => new Date(t.created_at).getFullYear()).filter(Boolean));
-    years.add(new Date().getFullYear());
-    return Array.from(years).sort((a, b) => b - a);
-  }, [tasks]);
-
-  const DraggableCard = React.memo(function DraggableCard({ task, index, onDelete, isHidden }) {
-    const taskId = String(task.id);
-    return (
-      <Draggable key={taskId} draggableId={taskId} index={index}>
-        {(provided, snapshot) => (
-          <div
-            ref={provided.innerRef}
-            {...provided.draggableProps}
-            {...provided.dragHandleProps}
-            className={`task-card ${snapshot.isDragging ? 'dragging' : ''} ${isHidden ? 'hidden-task' : ''}`}
-          >
-            <div className="task-header">
-              <h4>{task.title}</h4>
-              <button
-                className="delete-task-btn"
-                onClick={() => onDelete(task.id)}
-              >
-                🗑️
-              </button>
-            </div>
-            {task.description && (
-              <p className="task-description">{task.description}</p>
-            )}
-            {task.due_date && (
-              <div className="task-due-date">
-                📅 {formatDisplayDate(task.due_date)}
-              </div>
-            )}
-          </div>
-        )}
-      </Draggable>
-    );
-  });
+  useEffect(() => { loadTasks(); }, [loadTasks]);
 
   const handleDragEnd = async (result) => {
     const { source, destination } = result;
+    if (!destination || (source.droppableId === destination.droppableId && source.index === destination.index)) return;
 
-    // Dropped outside the list
-    if (!destination) {
-      return;
-    }
+    const srcItems = [...tasks[source.droppableId]];
+    const destItems = source.droppableId === destination.droppableId ? srcItems : [...tasks[destination.droppableId]];
+    const [moved] = srcItems.splice(source.index, 1);
+    destItems.splice(destination.index, 0, moved);
 
-    // Same position
-    if (source.droppableId === destination.droppableId && source.index === destination.index) {
-      console.log('Same position');
-      return;
-    }
+    setTasks(prev => ({ ...prev, [source.droppableId]: srcItems, [destination.droppableId]: destItems }));
 
-    const sourceColumn = tasks[source.droppableId];
-    const destColumn = tasks[destination.droppableId];
-    const sourceItems = Array.from(sourceColumn);
-    const destItems = source.droppableId === destination.droppableId ? sourceItems : Array.from(destColumn);
-
-    // Find removed item by id to avoid index mismatch
-    const draggableId = result.draggableId;
-    const srcIdx = sourceItems.findIndex(t => String(t.id) === String(draggableId));
-    if (srcIdx === -1) return;
-    const [removed] = sourceItems.splice(srcIdx, 1);
-
-    // Add to destination
-    destItems.splice(destination.index, 0, removed);
-
-    // Update local state immediately for smooth UX
-    setTasks(prev => ({
-      ...prev,
-      [source.droppableId]: sourceItems,
-      [destination.droppableId]: destItems
-    }));
-
-    // Update in database
-    try {
-      await updateTodo(removed.id, {
-        title: removed.title,
-        description: removed.description,
-        due_date: removed.due_date,
-        status: destination.droppableId
-      });
-      showNotification('✅ Task moved successfully!', 'success');
-    } catch (error) {
-      console.error('Error updating task status:', error);
-      showNotification('❌ Failed to move task. Reverting...', 'error');
-      // Revert on error
+    const result2 = await updateTodo(moved.id, { status: destination.droppableId });
+    if (result2.success) {
+      showToast('Task moved');
+    } else {
+      showToast('Failed to move task', 'error');
       loadTasks();
     }
   };
 
-  const handleAddTask = async (e) => {
+  const handleAdd = async (e) => {
     e.preventDefault();
-    
-    try {
-      const taskData = {
-        title: newTask.title,
-        description: newTask.description,
-        due_date: normalizeDateInput(newTask.dueDate) || null,
-        status: 'upcoming'
-      };
-
-      await createTodo(taskData);
-      await loadTasks(); // Reload tasks from server
-
-      setNewTask({ title: '', description: '', dueDate: '' });
-      setShowAddModal(false);
-      showNotification('✅ Task created successfully!', 'success');
-    } catch (error) {
-      console.error('Error creating task:', error);
-      showNotification('❌ Failed to create task. Please try again.', 'error');
+    if (!newTask.title.trim()) {
+      showToast('Please enter a title', 'error');
+      return;
     }
+    if (!user?.id) {
+      showToast('Please login first', 'error');
+      return;
+    }
+
+    setSaving(true);
+    const result = await addTodo(user.id, { 
+      title: newTask.title, 
+      description: newTask.description, 
+      due_date: newTask.dueDate || null, 
+      status: 'upcoming' 
+    });
+    
+    if (result.success) {
+      setTasks(prev => ({
+        ...prev,
+        upcoming: [result.data, ...prev.upcoming]
+      }));
+      setNewTask({ title: '', description: '', dueDate: new Date().toISOString().split('T')[0] });
+      setShowModal(false);
+      showToast('Task created');
+    } else {
+      showToast(result.error || 'Failed to create task', 'error');
+    }
+    setSaving(false);
   };
 
-  const showNotification = (message, type = 'success') => {
-    setNotification({ show: true, message, type });
-    setTimeout(() => {
-      setNotification({ show: false, message: '', type: '' });
-    }, 3000);
-  };
-
-  const handleDeleteTask = async (columnId, taskId) => {
-    try {
-      await deleteTodo(taskId);
-      await loadTasks(); // Reload tasks from server
-      showNotification('✅ Task deleted successfully!', 'success');
-    } catch (error) {
-      console.error('Error deleting task:', error);
-      showNotification('❌ Failed to delete task. Please try again.', 'error');
+  const handleDelete = async (id, status) => {
+    if (!window.confirm('Delete this task?')) return;
+    
+    const result = await deleteTodo(id);
+    if (result.success) {
+      setTasks(prev => ({
+        ...prev,
+        [status]: prev[status].filter(t => t.id !== id)
+      }));
+      showToast('Task deleted');
+    } else {
+      showToast(result.error || 'Failed to delete task', 'error');
     }
   };
 
   const columns = [
-    { id: 'upcoming', title: '📋 Upcoming', color: 'var(--primary-light)' },
-    { id: 'ongoing', title: '⚡ Ongoing', color: 'var(--primary)' },
-    { id: 'completed', title: '✅ Completed', color: 'var(--primary-dark)' }
+    { id: 'upcoming', title: 'Upcoming', color: 'bg-blue-100 text-blue-700' },
+    { id: 'ongoing', title: 'In Progress', color: 'bg-amber-100 text-amber-700' },
+    { id: 'completed', title: 'Completed', color: 'bg-emerald-100 text-emerald-700' }
   ];
 
+  if (loading) return <LoadingSpinner message="Loading tasks..." />;
+
   return (
-    <div className="page-wrapper">
-      <Navbar />
-      <main className="page-main">
-        <div className="todo-header">
-          <div className="todo-title-section">
-            <h1>📝 Todo List</h1>
-            <p className="todo-subtitle">Organize your tasks with drag & drop</p>
-          </div>
-          <div className="todo-controls">
-            <div className="month-display">
-              📅 {monthName}
-            </div>
-            <div className="month-picker">
-              <select
-                value={currentMonth}
-                onChange={(e) => setCurrentMonth(parseInt(e.target.value, 10))}
-              >
-                {monthOptions.map(m => (
-                  <option key={m.value} value={m.value}>{m.label}</option>
-                ))}
-              </select>
-              <select
-                value={currentYear}
-                onChange={(e) => setCurrentYear(parseInt(e.target.value, 10))}
-              >
-                {yearOptions.map(y => (
-                  <option key={y} value={y}>{y}</option>
-                ))}
-              </select>
-            </div>
-            <button className="add-task-button" onClick={() => setShowAddModal(true)}>
-              ➕ Add Task
-            </button>
-          </div>
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-blue-900">Tasks</h1>
+          <p className="text-blue-600 text-sm mt-1">Drag and drop to organize</p>
         </div>
+        <Button onClick={() => setShowModal(true)}>
+          <Icon name="plus" className="w-4 h-4" />
+          Add Task
+        </Button>
+      </div>
 
-        {loading ? (
-          <div className="loading-state">
-            <p>Loading tasks...</p>
-          </div>
-        ) : (
-          <DragDropContext onDragEnd={handleDragEnd}>
-            <div className="kanban-board">
-              {columns.map(column => {
-              const fullTasks = tasks[column.id];
-              const visibleCount = filterTasksByMonth(fullTasks).length;
-              const handleDelete = (taskId) => handleDeleteTask(column.id, taskId);
-              return (
-                <div key={column.id} className="kanban-column">
-                  <div className="column-header" style={{ borderColor: column.color }}>
-                    <h3>{column.title}</h3>
-                    <span className="task-count">{visibleCount}</span>
-                  </div>
-
-                  <Droppable droppableId={column.id}>
-                    {(provided, snapshot) => (
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.droppableProps}
-                        className={`task-list ${snapshot.isDraggingOver ? 'dragging-over' : ''}`}
-                      >
-                        {fullTasks.map((task, index) => {
-                          const taskDate = new Date(task.created_at);
-                          const isVisible = taskDate.getMonth() === currentMonth && taskDate.getFullYear() === currentYear;
-                          return (
-                            <DraggableCard
-                              key={String(task.id)}
-                              task={task}
-                              index={index}
-                              onDelete={handleDelete}
-                              isHidden={!isVisible}
-                            />
-                          );
-                        })}
-                        {provided.placeholder}
-                        {visibleCount === 0 && (
-                          <div className="empty-column">
-                            <p>No tasks yet</p>
+      {/* Kanban */}
+      <DragDropContext onDragEnd={handleDragEnd}>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {columns.map(col => (
+            <div key={col.id} className="flex flex-col">
+              <div className={`px-4 py-3 rounded-t-xl ${col.color} flex items-center justify-between`}>
+                <h3 className="font-semibold text-sm">{col.title}</h3>
+                <span className="bg-white/50 px-2 py-0.5 rounded text-xs font-medium">{tasks[col.id].length}</span>
+              </div>
+              <Droppable droppableId={col.id}>
+                {(provided, snapshot) => (
+                  <div
+                    ref={provided.innerRef}
+                    {...provided.droppableProps}
+                    className={`flex-1 p-3 rounded-b-xl bg-white/50 min-h-[400px] space-y-3 border border-t-0 border-blue-100 ${snapshot.isDraggingOver ? 'bg-blue-50' : ''}`}
+                  >
+                    {tasks[col.id].map((task, index) => (
+                      <Draggable key={String(task.id)} draggableId={String(task.id)} index={index}>
+                        {(provided, snapshot) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            className={`bg-white border border-blue-100 rounded-lg p-3 shadow-sm ${snapshot.isDragging ? 'shadow-lg ring-2 ring-blue-300' : ''}`}
+                          >
+                            <div className="flex justify-between items-start mb-1">
+                              <h4 className="font-medium text-blue-900 text-sm">{task.title}</h4>
+                              <button 
+                                onClick={() => handleDelete(task.id, col.id)} 
+                                className="text-blue-300 hover:text-red-500 p-1 hover:bg-red-50 rounded transition-colors"
+                              >
+                                <Icon name="trash" className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                            {task.description && <p className="text-xs text-blue-500 line-clamp-2 mb-2">{task.description}</p>}
+                            {task.due_date && (
+                              <div className="text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded-md w-fit flex items-center gap-1">
+                                <Icon name="calendar" className="w-3 h-3" />
+                                {new Date(task.due_date).toLocaleDateString()}
+                              </div>
+                            )}
                           </div>
                         )}
-                      </div>
-                    )}
-                  </Droppable>
-                </div>
-              );
-            })}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
+                    {tasks[col.id].length === 0 && <p className="text-center text-blue-400 text-sm py-8">No tasks</p>}
+                  </div>
+                )}
+              </Droppable>
             </div>
-          </DragDropContext>
-        )}
+          ))}
+        </div>
+      </DragDropContext>
 
-        {/* Add Task Modal */}
-        {showAddModal && (
-          <div className="modal-overlay" onClick={() => setShowAddModal(false)}>
-            <div className="add-task-modal" onClick={(e) => e.stopPropagation()}>
-              <div className="modal-header">
-                <h2>➕ Add New Task</h2>
-                <button className="close-button" onClick={() => setShowAddModal(false)}>
-                  ×
-                </button>
+      {/* Modal */}
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-blue-900/20 backdrop-blur-sm">
+          <Card className="w-full max-w-md p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-semibold text-blue-900 flex items-center gap-2">
+                <Icon name="plus" className="w-5 h-5 text-blue-500" />
+                Add Task
+              </h2>
+              <button onClick={() => setShowModal(false)} className="text-blue-400 hover:text-blue-600 p-1 hover:bg-blue-100 rounded-lg transition-colors">
+                <Icon name="x" className="w-5 h-5" />
+              </button>
+            </div>
+            <form onSubmit={handleAdd} className="space-y-4">
+              <div>
+                <label className="block text-sm text-blue-700 mb-1">Title *</label>
+                <input
+                  type="text"
+                  value={newTask.title}
+                  onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
+                  required
+                  className="w-full bg-blue-50 border border-blue-200 rounded-lg px-3 py-2 text-blue-900 text-sm focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+                />
               </div>
-              <form onSubmit={handleAddTask} className="task-form">
-                <div className="form-group">
-                  <label>Task Title *</label>
-                  <input
-                    type="text"
-                    value={newTask.title}
-                    onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
-                    placeholder="Enter task title..."
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Description</label>
-                  <textarea
-                    value={newTask.description}
-                    onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
-                    placeholder="Enter task description..."
-                    rows="4"
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Due Date</label>
-                  <input
-                    type="date"
-                    value={normalizeDateInput(newTask.dueDate)}
-                    onChange={(e) => setNewTask({ ...newTask, dueDate: normalizeDateInput(e.target.value) })}
-                  />
-                </div>
-                <div className="modal-footer">
-                  <button type="button" className="cancel-button" onClick={() => setShowAddModal(false)}>
-                    Cancel
-                  </button>
-                  <button type="submit" className="submit-button">
-                    Add Task
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
+              <div>
+                <label className="block text-sm text-blue-700 mb-1">Description</label>
+                <textarea
+                  value={newTask.description}
+                  onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
+                  rows="3"
+                  className="w-full bg-blue-50 border border-blue-200 rounded-lg px-3 py-2 text-blue-900 text-sm focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 resize-none"
+                />
+              </div>
+              <div>
+                <label className="block text-sm text-blue-700 mb-1 flex items-center gap-1">
+                  <Icon name="calendar" className="w-4 h-4" />
+                  Due Date
+                </label>
+                <input
+                  type="date"
+                  value={newTask.dueDate}
+                  onChange={(e) => setNewTask({ ...newTask, dueDate: e.target.value })}
+                  className="w-full bg-blue-50 border border-blue-200 rounded-lg px-3 py-2 text-blue-900 text-sm focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+                />
+              </div>
+              <div className="flex gap-3 pt-2">
+                <Button type="button" variant="secondary" onClick={() => setShowModal(false)} className="flex-1" disabled={saving}>Cancel</Button>
+                <Button type="submit" className="flex-1" disabled={saving}>
+                  {saving ? 'Saving...' : <><Icon name="plus" className="w-4 h-4" /> Add</>}
+                </Button>
+              </div>
+            </form>
+          </Card>
+        </div>
+      )}
 
-        {/* Notification Toast */}
-        {notification.show && (
-          <div className={`notification-toast ${notification.type}`}>
-            <span>{notification.message}</span>
-          </div>
-        )}
-      </main>
-      <Footer />
+      {/* Toast */}
+      {toast && (
+        <div className={`fixed bottom-6 right-6 px-4 py-2 rounded-lg text-sm z-50 shadow-lg flex items-center gap-2 ${toast.type === 'success' ? 'bg-emerald-500 text-white' : 'bg-red-500 text-white'}`}>
+          <Icon name={toast.type === 'success' ? 'checkCircle' : 'x'} className="w-4 h-4" />
+          {toast.msg}
+        </div>
+      )}
     </div>
   );
 }

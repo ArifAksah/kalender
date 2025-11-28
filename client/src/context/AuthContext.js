@@ -1,4 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
+import { supabase, signInWithGoogle as supabaseSignInWithGoogle, signOut as supabaseSignOut } from '../lib/supabase';
 
 const AuthContext = createContext(null);
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
@@ -9,15 +10,80 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const token = localStorage.getItem('authToken');
-    const savedUser = localStorage.getItem('user');
+    checkAuth();
     
-    if (token && savedUser) {
-      verifyToken(token);
-    } else {
-      setLoading(false);
+    // Listen for Supabase auth changes
+    if (supabase) {
+      const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+        console.log('Auth state changed:', event, session?.user?.email);
+        
+        if (event === 'SIGNED_IN' && session?.user) {
+          // User signed in with Google
+          const supaUser = session.user;
+          const userData = {
+            id: supaUser.id,
+            email: supaUser.email,
+            name: supaUser.user_metadata?.full_name || supaUser.email?.split('@')[0],
+            username: supaUser.email?.split('@')[0],
+            avatar: supaUser.user_metadata?.avatar_url,
+            provider: 'google'
+          };
+          
+          localStorage.setItem('authToken', session.access_token);
+          localStorage.setItem('user', JSON.stringify(userData));
+          setUser(userData);
+          setIsAuthenticated(true);
+        } else if (event === 'SIGNED_OUT') {
+          localStorage.removeItem('authToken');
+          localStorage.removeItem('user');
+          setUser(null);
+          setIsAuthenticated(false);
+        }
+      });
+
+      return () => subscription.unsubscribe();
     }
   }, []);
+
+  const checkAuth = async () => {
+    try {
+      // Check Supabase session first
+      if (supabase) {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user) {
+          const supaUser = session.user;
+          const userData = {
+            id: supaUser.id,
+            email: supaUser.email,
+            name: supaUser.user_metadata?.full_name || supaUser.email?.split('@')[0],
+            username: supaUser.email?.split('@')[0],
+            avatar: supaUser.user_metadata?.avatar_url,
+            provider: 'google'
+          };
+          
+          localStorage.setItem('authToken', session.access_token);
+          localStorage.setItem('user', JSON.stringify(userData));
+          setUser(userData);
+          setIsAuthenticated(true);
+          setLoading(false);
+          return;
+        }
+      }
+
+      // Fall back to traditional auth
+      const token = localStorage.getItem('authToken');
+      const savedUser = localStorage.getItem('user');
+      
+      if (token && savedUser) {
+        await verifyToken(token);
+      } else {
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error('Auth check error:', error);
+      setLoading(false);
+    }
+  };
 
   const verifyToken = async (token) => {
     try {
@@ -46,8 +112,6 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (username, email, password) => {
     try {
-      console.log('Attempting registration for:', username);
-      
       const response = await fetch(`${API_URL}/auth/register`, {
         method: 'POST',
         headers: {
@@ -56,12 +120,9 @@ export const AuthProvider = ({ children }) => {
         body: JSON.stringify({ username, email, password })
       });
 
-      console.log('Response status:', response.status);
       const data = await response.json();
-      console.log('Response data:', data);
 
       if (response.ok && data.success) {
-        // Registration successful, but no token yet (need to verify email first)
         if (data.data.requiresVerification) {
           return { 
             success: true, 
@@ -70,7 +131,6 @@ export const AuthProvider = ({ children }) => {
           };
         }
         
-        // If token is provided (shouldn't happen in strict mode)
         if (data.data.token) {
           localStorage.setItem('authToken', data.data.token);
           localStorage.setItem('user', JSON.stringify(data.data.user));
@@ -90,8 +150,6 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (username, password) => {
     try {
-      console.log('Attempting login for:', username);
-      
       const response = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
         headers: {
@@ -100,9 +158,7 @@ export const AuthProvider = ({ children }) => {
         body: JSON.stringify({ username, password })
       });
 
-      console.log('Response status:', response.status);
       const data = await response.json();
-      console.log('Response data:', data);
 
       if (response.ok && data.success) {
         localStorage.setItem('authToken', data.data.token);
@@ -119,7 +175,25 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logout = () => {
+  const loginWithGoogle = async () => {
+    try {
+      const { error } = await supabaseSignInWithGoogle();
+      if (error) {
+        return { success: false, message: error.message };
+      }
+      return { success: true };
+    } catch (error) {
+      console.error('Google login error:', error);
+      return { success: false, message: 'Google login failed. Please try again.' };
+    }
+  };
+
+  const logout = async () => {
+    // Sign out from Supabase if user logged in with Google
+    if (user?.provider === 'google') {
+      await supabaseSignOut();
+    }
+    
     localStorage.removeItem('authToken');
     localStorage.removeItem('user');
     setIsAuthenticated(false);
@@ -132,6 +206,7 @@ export const AuthProvider = ({ children }) => {
     user,
     register,
     login,
+    loginWithGoogle,
     logout
   };
 

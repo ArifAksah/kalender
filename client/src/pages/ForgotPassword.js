@@ -1,115 +1,64 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { requestPasswordReset } from '../services/api';
-import './Login.css';
-import '../styles/modernPage.css';
+import Button from '../components/Button';
 
 function ForgotPassword() {
   const [email, setEmail] = useState('');
-  const [message, setMessage] = useState('');
+  const [msg, setMsg] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    setMessage('');
-    setLoading(true);
-
+    setMsg('');
     if (!email) {
-      setError('Please enter your email address');
-      setLoading(false);
-      return;
+      return setError('Please enter your email');
     }
-
+    setLoading(true);
     try {
       const result = await requestPasswordReset(email);
-      setMessage(result.message || 'If the email exists, a password reset link has been sent.');
+      setMsg(result.message || 'If the email exists, a reset link has been sent.');
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to send reset email. Please try again.');
+      setError(err.response?.data?.message || 'Failed to send reset email');
     }
-
     setLoading(false);
   };
 
   return (
-    <div className="login-container">
-      <div className="login-card">
-        <div className="login-header">
-          <div className="avatar-circle">
-            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M20 20C23.3137 20 26 17.3137 26 14C26 10.6863 23.3137 8 20 8C16.6863 8 14 10.6863 14 14C14 17.3137 16.6863 20 20 20Z" fill="currentColor"/>
-              <path d="M20 22C14.4772 22 10 25.4772 10 31V32H30V31C30 25.4772 25.5228 22 20 22Z" fill="currentColor"/>
-            </svg>
-          </div>
-          <h1 className="login-title">Forgot Password</h1>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-sky-50 to-indigo-50 flex items-center justify-center p-4">
+      <div className="w-full max-w-sm">
+        <div className="text-center mb-8">
+          <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center text-2xl font-bold text-white mx-auto mb-4 shadow-lg shadow-blue-200">P</div>
+          <h1 className="text-2xl font-bold text-blue-900">Forgot Password</h1>
+          <p className="text-blue-600 text-sm mt-1">Enter your email to reset</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="login-form">
-          {error && (
-            <div className="login-error">
-              <span className="error-icon">⚠️</span>
-              <span>{error}</span>
-            </div>
-          )}
+        <div className="bg-white/70 backdrop-blur-sm border border-blue-100 rounded-xl p-6 shadow-lg shadow-blue-100">
+          {error && <div className="bg-red-50 border border-red-200 text-red-600 text-sm p-3 rounded-lg mb-4">{error}</div>}
+          {msg && <div className="bg-emerald-50 border border-emerald-200 text-emerald-600 text-sm p-3 rounded-lg mb-4">{msg}</div>}
 
-          {message && (
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '10px',
-              padding: '12px 16px',
-              background: '#d4edda',
-              border: '2px solid #28a745',
-              borderRadius: '12px',
-              color: '#155724',
-              fontSize: '0.9rem',
-              fontWeight: '600',
-              marginBottom: '24px'
-            }}>
-              <span style={{fontSize: '1.2rem'}}>✓</span>
-              {message}
-            </div>
-          )}
-
-          <div className="form-group">
-            <div className="input-wrapper">
-              <div className="icon-capsule">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M2.5 6.66667L10 11.6667L17.5 6.66667M3.33333 15H16.6667C17.5871 15 18.3333 14.2538 18.3333 13.3333V6.66667C18.3333 5.74619 17.5871 5 16.6667 5H3.33333C2.41286 5 1.66667 5.74619 1.66667 6.66667V13.3333C1.66667 14.2538 2.41286 15 3.33333 15Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </div>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm text-blue-700 mb-1">Email</label>
               <input
-                id="email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Email"
-                className="form-input form-input-username"
+                className="w-full bg-blue-50 border border-blue-200 rounded-lg px-3 py-2.5 text-blue-900 text-sm focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
                 disabled={loading}
               />
             </div>
-          </div>
-
-          <button
-            type="submit"
-            className="login-button"
-            disabled={loading}
-          >
-            <span style={{ opacity: loading ? 0 : 1, transition: 'opacity 0.3s' }}>
-              SEND RESET LINK
-            </span>
-          </button>
-        </form>
-
-        <div className="login-footer">
-          <p className="register-link">
-            Remember your password?{' '}
-            <Link to="/login" className="signup-link">
-              Sign in!
-            </Link>
-          </p>
+            <Button type="submit" disabled={loading} className="w-full">
+              {loading ? 'Sending...' : 'Send Reset Link'}
+            </Button>
+          </form>
         </div>
+
+        <p className="text-center text-blue-600 text-sm mt-6">
+          <Link to="/login" className="text-blue-700 font-medium hover:underline">Back to Sign In</Link>
+        </p>
       </div>
     </div>
   );
