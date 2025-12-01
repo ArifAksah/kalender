@@ -68,11 +68,7 @@ function TaskCalendar({ tasks = [], expenses = [], onDateClick }) {
   const today = new Date();
   const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
 
-  const formatCurrency = (amount) => {
-    if (amount >= 1000000) return `${(amount/1000000).toFixed(1)}M`;
-    if (amount >= 1000) return `${(amount/1000).toFixed(0)}K`;
-    return amount.toString();
-  };
+
 
   return (
     <div className="select-none">
@@ -127,7 +123,6 @@ function TaskCalendar({ tasks = [], expenses = [], onDateClick }) {
           const taskCount = item.tasks?.length || 0;
           const completedCount = item.tasks?.filter(t => t.status === 'completed').length || 0;
           const allCompleted = taskCount > 0 && completedCount === taskCount;
-          const expenseTotal = item.expenses?.reduce((sum, e) => sum + e.amount, 0) || 0;
           const dayOfWeek = index % 7;
           const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
           

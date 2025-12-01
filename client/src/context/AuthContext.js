@@ -9,42 +9,6 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
 
-  useEffect(() => {
-    checkAuth();
-    
-    // Listen for Supabase auth changes
-    if (supabase) {
-      const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-        console.log('Auth state changed:', event, session?.user?.email);
-        
-        if (event === 'SIGNED_IN' && session?.user) {
-          // User signed in with Google
-          const supaUser = session.user;
-          const userData = {
-            id: supaUser.id,
-            email: supaUser.email,
-            name: supaUser.user_metadata?.full_name || supaUser.email?.split('@')[0],
-            username: supaUser.email?.split('@')[0],
-            avatar: supaUser.user_metadata?.avatar_url,
-            provider: 'google'
-          };
-          
-          localStorage.setItem('authToken', session.access_token);
-          localStorage.setItem('user', JSON.stringify(userData));
-          setUser(userData);
-          setIsAuthenticated(true);
-        } else if (event === 'SIGNED_OUT') {
-          localStorage.removeItem('authToken');
-          localStorage.removeItem('user');
-          setUser(null);
-          setIsAuthenticated(false);
-        }
-      });
-
-      return () => subscription.unsubscribe();
-    }
-  }, []);
-
   const checkAuth = async () => {
     try {
       // Check Supabase session first
@@ -84,6 +48,43 @@ export const AuthProvider = ({ children }) => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    checkAuth();
+    
+    // Listen for Supabase auth changes
+    if (supabase) {
+      const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+        console.log('Auth state changed:', event, session?.user?.email);
+        
+        if (event === 'SIGNED_IN' && session?.user) {
+          // User signed in with Google
+          const supaUser = session.user;
+          const userData = {
+            id: supaUser.id,
+            email: supaUser.email,
+            name: supaUser.user_metadata?.full_name || supaUser.email?.split('@')[0],
+            username: supaUser.email?.split('@')[0],
+            avatar: supaUser.user_metadata?.avatar_url,
+            provider: 'google'
+          };
+          
+          localStorage.setItem('authToken', session.access_token);
+          localStorage.setItem('user', JSON.stringify(userData));
+          setUser(userData);
+          setIsAuthenticated(true);
+        } else if (event === 'SIGNED_OUT') {
+          localStorage.removeItem('authToken');
+          localStorage.removeItem('user');
+          setUser(null);
+          setIsAuthenticated(false);
+        }
+      });
+
+      return () => subscription.unsubscribe();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const verifyToken = async (token) => {
     try {

@@ -91,7 +91,8 @@ function TicTacToe() {
 
       return () => clearTimeout(timer);
     }
-  }, [isPlayerTurn, board, winner]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isPlayerTurn, winner, board]);
 
   const resetGame = () => {
     setBoard(Array(9).fill(null));

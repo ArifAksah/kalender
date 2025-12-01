@@ -164,7 +164,7 @@ export const generateThumbnail = async (file, size = 150) => {
   });
 };
 
-export default {
+const imageOptimizationUtils = {
   compressImage,
   lazyLoadImage,
   preloadImages,
@@ -172,3 +172,5 @@ export default {
   getImageDimensions,
   generateThumbnail
 };
+
+export default imageOptimizationUtils;

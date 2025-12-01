@@ -216,9 +216,11 @@ export const exportToCSV = (progressData, filename = 'progress-export.csv') => {
   }
 };
 
-export default {
+const exportUtils = {
   exportToPDF,
   exportToExcel,
   exportAsImage,
   exportToCSV
 };
+
+export default exportUtils;

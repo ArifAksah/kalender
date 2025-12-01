@@ -20,20 +20,6 @@ function Numpuz() {
     'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=400&h=400&fit=crop'
   ];
 
-  useEffect(() => {
-    initializeGame();
-  }, []);
-
-  useEffect(() => {
-    let interval;
-    if (isPlaying && !isWon) {
-      interval = setInterval(() => {
-        setTimer(prev => prev + 1);
-      }, 1000);
-    }
-    return () => clearInterval(interval);
-  }, [isPlaying, isWon]);
-
   const initializeGame = () => {
     let newTiles;
     do {
@@ -46,6 +32,21 @@ function Numpuz() {
     setIsWon(false);
     setIsPlaying(false);
   };
+
+  useEffect(() => {
+    initializeGame();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    let interval;
+    if (isPlaying && !isWon) {
+      interval = setInterval(() => {
+        setTimer(prev => prev + 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [isPlaying, isWon]);
 
   const shuffle = (array) => {
     const shuffled = [...array];
@@ -109,43 +110,44 @@ function Numpuz() {
     }
   };
 
-  const handleKeyPress = (e) => {
-    if (isWon) return;
-    
-    const emptyIndex = tiles.indexOf(EMPTY_TILE);
-    const emptyRow = Math.floor(emptyIndex / SIZE);
-    const emptyCol = emptyIndex % SIZE;
-    let targetIndex = -1;
-
-    switch (e.key) {
-      case 'ArrowUp':
-        e.preventDefault();
-        if (emptyRow < SIZE - 1) targetIndex = emptyIndex + SIZE;
-        break;
-      case 'ArrowDown':
-        e.preventDefault();
-        if (emptyRow > 0) targetIndex = emptyIndex - SIZE;
-        break;
-      case 'ArrowLeft':
-        e.preventDefault();
-        if (emptyCol < SIZE - 1) targetIndex = emptyIndex + 1;
-        break;
-      case 'ArrowRight':
-        e.preventDefault();
-        if (emptyCol > 0) targetIndex = emptyIndex - 1;
-        break;
-      default:
-        break;
-    }
-
-    if (targetIndex !== -1) {
-      moveTile(targetIndex);
-    }
-  };
-
   useEffect(() => {
+    const handleKeyPress = (e) => {
+      if (isWon) return;
+      
+      const emptyIndex = tiles.indexOf(EMPTY_TILE);
+      const emptyRow = Math.floor(emptyIndex / SIZE);
+      const emptyCol = emptyIndex % SIZE;
+      let targetIndex = -1;
+
+      switch (e.key) {
+        case 'ArrowUp':
+          e.preventDefault();
+          if (emptyRow < SIZE - 1) targetIndex = emptyIndex + SIZE;
+          break;
+        case 'ArrowDown':
+          e.preventDefault();
+          if (emptyRow > 0) targetIndex = emptyIndex - SIZE;
+          break;
+        case 'ArrowLeft':
+          e.preventDefault();
+          if (emptyCol < SIZE - 1) targetIndex = emptyIndex + 1;
+          break;
+        case 'ArrowRight':
+          e.preventDefault();
+          if (emptyCol > 0) targetIndex = emptyIndex - 1;
+          break;
+        default:
+          break;
+      }
+
+      if (targetIndex !== -1) {
+        moveTile(targetIndex);
+      }
+    };
+
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tiles, isWon]);
 
   const formatTime = (seconds) => {

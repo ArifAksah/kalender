@@ -14,17 +14,6 @@ function VerifyEmail() {
   const [countdown, setCountdown] = useState(5);
   const [resending, setResending] = useState(false);
 
-  useEffect(() => {
-    if (hasVerified.current) return;
-    if (token) {
-      hasVerified.current = true;
-      verify(token);
-    } else {
-      setStatus('error');
-      setMsg('Invalid verification link');
-    }
-  }, [token]);
-
   const verify = async (t) => {
     try {
       const res = await fetch(`${API_URL}/auth/verify-email/${t}`);
@@ -50,6 +39,18 @@ function VerifyEmail() {
       setMsg('Verification failed');
     }
   };
+
+  useEffect(() => {
+    if (hasVerified.current) return;
+    if (token) {
+      hasVerified.current = true;
+      verify(token);
+    } else {
+      setStatus('error');
+      setMsg('Invalid verification link');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token]);
 
   const handleResend = async () => {
     const email = prompt('Enter your email:');
