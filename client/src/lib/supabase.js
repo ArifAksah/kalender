@@ -3,8 +3,18 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = process.env.REACT_APP_SUPABASE_URL;
 const supabaseAnonKey = process.env.REACT_APP_SUPABASE_ANON_KEY;
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.warn('Supabase credentials not configured. Google SSO will not work.');
+if (!supabaseUrl) {
+  console.error('❌ REACT_APP_SUPABASE_URL is not configured. Check your .env.local or environment variables.');
+}
+
+if (!supabaseAnonKey) {
+  console.error('❌ REACT_APP_SUPABASE_ANON_KEY is not configured. Check your .env.local or environment variables.');
+}
+
+if (supabaseUrl && supabaseAnonKey) {
+  console.log('✅ Supabase configured successfully');
+} else {
+  console.warn('⚠️ Supabase credentials not configured. Google SSO will not work.');
 }
 
 export const supabase = supabaseUrl && supabaseAnonKey 

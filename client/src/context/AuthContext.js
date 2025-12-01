@@ -177,10 +177,18 @@ export const AuthProvider = ({ children }) => {
   };
 
   const loginWithGoogle = async () => {
+    if (!supabase) {
+      return { 
+        success: false, 
+        message: 'Supabase is not configured. Please check your environment variables (REACT_APP_SUPABASE_URL and REACT_APP_SUPABASE_ANON_KEY).' 
+      };
+    }
+    
     try {
       const { error } = await supabaseSignInWithGoogle();
       if (error) {
-        return { success: false, message: error.message };
+        console.error('Google login error:', error);
+        return { success: false, message: error.message || 'Google login failed' };
       }
       return { success: true };
     } catch (error) {
