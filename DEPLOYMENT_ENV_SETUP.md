@@ -4,7 +4,20 @@
 
 Your `.env` and `client/.env` files are in `.gitignore` and won't be pushed to your deployment platform. You must set environment variables directly on your hosting platform.
 
-## For Vercel (Frontend - client/)
+## Step 1: Configure Supabase OAuth Redirect URLs
+
+**This is CRITICAL for Google SSO to work on Vercel!**
+
+1. Go to [Supabase Dashboard](https://supabase.com/dashboard)
+2. Select your project
+3. Go to **Authentication** → **Providers** → **Google**
+4. In the "Redirect URLs" section, add your Vercel domain:
+   - `https://your-vercel-domain.vercel.app/`
+   - `https://your-vercel-domain.vercel.app`
+   - `http://localhost:3000/` (for local development)
+5. Click **Save**
+
+## Step 2: For Vercel (Frontend - client/)
 
 1. Go to your Vercel project dashboard
 2. Click **Settings** → **Environment Variables**
